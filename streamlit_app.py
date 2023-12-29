@@ -86,7 +86,7 @@ def main():
             
             image_url = generate_image(image_scene_prompt)
             if image_url:
-                st.success('Image generated successfully.')
+                st.success(f'Image generated successfully. at {image_url}')
                 try:
                     # Open image from URL
                     img = open_image_from_url(image_url)
