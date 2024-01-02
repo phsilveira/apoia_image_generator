@@ -62,6 +62,10 @@ def get_image_improvement_template():
     template_dict = promptlayer.prompts.get('image_improvement')
     return template_dict['template']
 
+def get_image_improvement_english_template():
+    template_dict = promptlayer.prompts.get('image_improvement_english')
+    return template_dict['template']
+
 def get_midjourney_template():
     template_dict = promptlayer.prompts.get('midjourney')
     return template_dict['template']
@@ -69,19 +73,23 @@ def get_midjourney_template():
 def main():
     st.title("Apoia Image Generator")
     st.write("This app generates images for Apoia's courses using custom prompt and midjourney engine.")
-    
-    # # Input URL
-    # image_url = st.text_input('Enter Image URL:')
 
     image_suggestion = st.text_input('Enter Image Suggestion (ex: Course name):', 'Análise de crédito para empresas de médio porte')
 
     midjourney = st.text_area('Enter Midjourney prompt:', get_midjourney_template())
 
-    prompt_for_image_improvement = st.text_area('Enter Prompt for Image Improvement:', get_image_improvement_template())
+    prompt_for_image_improvement = st.text_area('Prompt for Image Improvement:', get_image_improvement_template())
+    prompt_for_image_improvement_english = st.text_area('(For English) Prompt for Image Improvement:', get_image_improvement_english_template())
+
+    use_english_prompt = st.checkbox('Use English Prompt', value=False)
 
     if st.button('Generate Image'):
         with st.spinner("Loading..."):
-            image_suggestion = suggest_course_image(image_suggestion, prompt_for_image_improvement)
+            if use_english_prompt:
+                image_suggestion = suggest_course_image(image_suggestion, prompt_for_image_improvement_english)
+            else:
+                image_suggestion = suggest_course_image(image_suggestion, prompt_for_image_improvement)
+            
             image_scene_prompt = midjourney.format(**{'original_prompt': image_suggestion})
             
             image_url = generate_image(image_scene_prompt)
