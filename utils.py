@@ -42,7 +42,7 @@ def fetch_image(task_id):
     # print(json.dumps(response.json(), indent=4))
     return response.json()
 
-def get_imagine_request(prompt):
+def get_imagine_request(prompt, aspect_ratio="16:9", ):
 
 
     X_API_KEY = settings.X_API_KEY
@@ -55,16 +55,13 @@ def get_imagine_request(prompt):
     data = {
         "process_mode": "fast",
         "prompt": prompt,
-        "aspect_ratio": "16:9",
+        "aspect_ratio": aspect_ratio,
         "process_mode": "mixed",
         "webhook_endpoint": "",
         "webhook_secret": ""
     }
 
     response = requests.post(endpoint, headers=headers, json=data)
-
-    # print(response.status_code)
-    # print(response.json())
 
     return response.json()
 
