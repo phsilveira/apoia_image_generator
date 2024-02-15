@@ -1,3 +1,4 @@
+import io
 import json
 import streamlit as st
 import openai
@@ -117,6 +118,8 @@ def text_to_image_generator():
     #     # Display image
     #     st.image(original_img, caption=original_image_url, use_column_width=True)
 
+    aspect_ratio_option = st.selectbox('Aspect Ratio', ['16:9', '9:16', ])
+
     midjourney = st.text_area('Enter Midjourney prompt:', get_midjourney_template())
 
     prompt_for_image_improvement = st.text_area('Prompt for Image Improvement:', get_image_improvement_template())
@@ -133,7 +136,7 @@ def text_to_image_generator():
             
             image_scene_prompt = midjourney.format(**{'original_prompt': image_suggestion})
             
-            image_url = generate_image(image_scene_prompt, aspect_ratio=st.session_state.get("aspect_ratio_option", '16:9'))
+            image_url = generate_image(image_scene_prompt, aspect_ratio=st.session_state.get(aspect_ratio_option, '16:9'))
             if image_url:
                 st.success(f'Image generated successfully. at {image_url}')
                 try:
@@ -184,13 +187,9 @@ def text_to_speech_generator():
 
     if st.button('Generate Speech'):
         response = requests.post(url, json=data, headers=headers)
-        audio_file_path = 'output.mp3'
-        with open(audio_file_path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=CHUNK_SIZE):
-                if chunk:
-                    f.write(chunk)
+        audio_data = io.BytesIO(response.content)
 
-        st.audio(audio_file_path, format='audio/mp3')
+        st.audio(audio_data, format='audio/mp3')
 
 def send_to_generate_avatar_heygen(text):
     headers = {
@@ -334,7 +333,6 @@ def main():
 
     st.sidebar.header('Settings')
     st.session_state["model_option"] = st.sidebar.selectbox('LLM Model', ['gpt-3.5-turbo', 'gpt-4',])
-    st.session_state["aspect_ratio_option"] = st.sidebar.selectbox('Aspect Ratio', ['16:9', '9:16', ])
 
 
 
