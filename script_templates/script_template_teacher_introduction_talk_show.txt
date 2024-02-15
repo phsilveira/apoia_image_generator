@@ -1,0 +1,20 @@
+INTRODUÇÃO AO CURSO E PROFESSOR - TEMPLATE
+
+Olá, `{student_name}`! Seja bem-vindo(a) ao SEU CURSO de `{course_name}`.
+
+Eu sou `{professor_name}`, MENTOR(A) de `{professor_area}` aqui na Apoia e SEU PROFESSOR nesse curso.
+
+Eu vou acompanhar você no curso de `{course_name}`, mas antes, preparei uma rodada de perguntas e respostas para você me conhecer melhor.
+
+PERGUNTAS ESTILO TALK SHOW - PROMPT
+
+***As perguntas devem ter: formação, carreira, conquistas e curiosidades ou hobbies***
+
+*Sem narração ou com outra voz*  `{answer}` 
+
+CTA + MOTIVACIONAL - TEMPLATE
+
+Se quiser me conhecer melhor, é só me adicionar nas redes sociais, deixei os links abaixo desse vídeo.
+
+Agora, vamos descobrir como completar esse curso vai impactar na carreira.
+Vamos lá!
