@@ -6,83 +6,19 @@ import hmac
 from PIL import Image
 import requests
 import time
-from io import BytesIO
-import promptlayer
-import settings
-from utils import (get_imagine_request, 
+from templates import chatgpt_chat_completion_with_prompt, get_image_improvement_english_template, get_image_improvement_template, get_midjourney_template
+from utils import (fetch_narration_in_memory, generate_avatar_heygen_with_audio_file, get_generated_avatar_heygen, get_imagine_request, 
                    fetch_image, 
                    download_image_in_memory,
-                   crop_quadrants_in_memory,
-                   upload_image_in_memory_to_s3,)
-
-promptlayer.api_key = settings.PROMPTLAYER
+                   crop_quadrants_in_memory, send_to_generate_avatar_heygen,
+                   upload_object_in_memory_to_s3,
+                   generate_image)
 
 
 def open_image_from_url(image_url):
     response = requests.get(image_url, stream=True)
     response.raise_for_status()
     return Image.open(response.raw)
-
-def generate_image(image_sugestion: str, aspect_ratio: str = "16:9") -> str:
-    response = get_imagine_request(image_sugestion, aspect_ratio)
-
-    fetch_response = fetch_image(response['task_id'])
-    print(fetch_response)
-    while fetch_response['status'] != 'finished':
-        print('waiting 20s...')
-        time.sleep(20)
-        fetch_response = fetch_image(response['task_id'])
-        print(fetch_response)
-
-        if fetch_response['status'] == 'failed':
-            print(fetch_response)
-            return None
-
-    image_url = fetch_response['task_result']['image_url']
-    task_id = response['task_id']
-    file_name =  f'{task_id}.png'
-    downloaded_image = download_image_in_memory(image_url)
-    if downloaded_image:
-        cropped_images = crop_quadrants_in_memory(downloaded_image)
-
-    object_name = f'text_to_image_generator/{file_name}'
-    image_url = upload_image_in_memory_to_s3(cropped_images[0], object_name)
-    print(image_url)
-    return image_url
-
-def chatgpt_chat_completion_with_prompt(payload, prompt_template, model="gpt-3.5-turbo"):
-    prompt = prompt_template.format(**payload)
-
-    completion = openai.ChatCompletion.create(
-      model=model,
-      messages=[
-        {"role": "user", "content": prompt}
-      ]
-    )
-
-    print(completion.choices[0].message.content)
-    return completion.choices[0].message.content
-
-def get_image_improvement_template():
-    template_dict = promptlayer.prompts.get('image_improvement')
-    return template_dict['template']
-
-def get_image_improvement_english_template():
-    template_dict = promptlayer.prompts.get('image_improvement_english')
-    return template_dict['template']
-
-def get_midjourney_template():
-    template_dict = promptlayer.prompts.get('midjourney')
-    return template_dict['template']
-
-def get_prompt_template_teacher_introduction_talk_show():
-    template_dict = promptlayer.prompts.get('prompt_template_teacher_introduction_talk_show')
-    return template_dict['template']
-
-def get_script_template_teacher_introduction_talk_show():
-    with open('script_templates/script_template_teacher_introduction_talk_show.txt', 'r') as file:
-        script_template = file.read()
-    return script_template
 
 def check_password():
     """Returns `True` if the user had the correct password."""
@@ -162,85 +98,67 @@ def text_to_image_generator():
 def text_to_speech_generator():
     st.write("Text to Speech Generator using ElevenLabs API")
 
-    CHUNK_SIZE = 1024
-    voice_id = '21m00Tcm4TlvDq8ikWAM'
-    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
-
-    headers = {
-      "Accept": "audio/mpeg",
-      "Content-Type": "application/json",
-      "xi-api-key": st.secrets["xi_api_key"]  # replace with your method to get the API key
+    voices = {
+        'Rachel': {
+            'model_id': 'eleven_monolingual_v1',
+            'voice_id': '21m00Tcm4TlvDq8ikWAM'
+        },
+        'Rangel Barbosa 02':{
+            "voice_id": "rVYXh5OmQcvchhNYtBWe",
+            "model_id": "eleven_multilingual_v2",
+        }
     }
-
-    text = st.text_area("Enter text:", """Born and raised in the charming south, I can add a touch of sweet southern hospitality to your audiobooks and podcasts""")
+    
+    selected_voice = st.selectbox("Select a voice:", ['Rangel Barbosa 02', 'Rachel'])
+    text = st.text_area("Enter text:", """Alcançe seus objetivos na medida""")
     stability = st.slider("Stability:", min_value=0.0, max_value=1.0, value=0.5)
     similarity_boost = st.slider("Similarity Boost:", min_value=0.0, max_value=1.0, value=0.5)
-
-    data = {
-      "text": text,
-      "model_id": "eleven_monolingual_v1",
-      "voice_settings": {
-        "stability": stability,
-        "similarity_boost": similarity_boost
-      }
-    }
+    style = st.slider("Style:", min_value=0.0, max_value=1.0, value=0.2)
 
     if st.button('Generate Speech'):
-        response = requests.post(url, json=data, headers=headers)
-        audio_data = io.BytesIO(response.content)
+        voice_id = voices[selected_voice]['voice_id']
+        model_id = voices[selected_voice]['model_id']
 
-        st.audio(audio_data, format='audio/mp3')
+        audio_data = fetch_narration_in_memory(text, voice_id, stability, similarity_boost, style, model_id)
+        
+        audio_data.seek(0)
+        st.audio(audio_data.read(), format='audio/mp3')
 
-def send_to_generate_avatar_heygen(text):
-    headers = {
-        'X-Api-Key': st.secrets["HEYGEN_API_KEY"],  # replace with your method to get the API key
-        'Content-Type': 'application/json',
-    }
-
-    json_data = {
-        'background': '#012A4A',
-        'clips': [
-            {
-                'avatar_id': 'Andrew_public_pro4_20230614',
-                'avatar_style': 'normal',
-                'input_text': text,
-                'offset': {
-                    'x': 0,
-                    'y': 0,
-                },
-                'scale': 1,
-                'voice_id': 'e9a57ec649c8e7db9d8104529374b2c3',
-            },
-        ],
-        'ratio': '16:9',
-        'test': False,
-        'version': 'v1alpha',
-    }
-
-    result = requests.post('https://api.heygen.com/v1/video.generate', headers=headers, json=json_data)
-    return result.status_code, result.json()
-
-def get_generated_avatar_heygen(video_id):
-    headers = {
-        'X-Api-Key': st.secrets["HEYGEN_API_KEY"],  # replace with your method to get the API key
-    }
-
-    params = {
-        'video_id': video_id,
-    }
-
-    response = requests.get('https://api.heygen.com/v1/video_status.get', params=params, headers=headers)
-    return response.status_code, response.json()
+        audio_data.seek(0)
+        st.download_button(
+            label="Download audio file",
+            data=audio_data.read(),
+            file_name="audio.mp3",
+            mime="audio/mpeg"
+        )
 
 def text_to_avatar_generator():
     st.write("Text to Avatar Generator using Heygen API")
 
-    narration = st.text_area("Enter narration:", 'Oi, aqui é o Paulo')
+    selected_avatar = st.selectbox("Select a voice:", ['Rangel Barbosa', ])
+    # narration = st.text_area("Enter narration:", 'Oi, aqui é o Paulo')
+    uploaded_file = st.file_uploader("Upload MP3 file", type=['mp3'])
+    test = st.checkbox('Test', value=False)
 
     if st.button('Generate Avatar'):
         with st.spinner("Loading..."):
-            result = send_to_generate_avatar_heygen(narration)
-            video_id = result[1]['data']['video_id'] # "video_id"
+            result = None
+            if uploaded_file is not None:
+                file_bytes = uploaded_file.read()
+                uploaded_file_io = io.BytesIO(file_bytes)
+                audio_url = upload_object_in_memory_to_s3(uploaded_file_io, 'audio/narration.mp3')
+
+                if audio_url:
+                    result = generate_avatar_heygen_with_audio_file(audio_url=audio_url, is_teste=test)
+            
+            # else:
+            #     result = send_to_generate_avatar_heygen(narration, test=test)
+
+            if not result:
+                st.error('Failed to generate avatar.')
+                return
+            
+            video_id = result[1]['data']['video_id']
 
             result = get_generated_avatar_heygen(video_id)
 
