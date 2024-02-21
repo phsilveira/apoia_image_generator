@@ -7,9 +7,132 @@ import settings
 import json
 from io import BytesIO
 import pickle
+import streamlit as st
+import time
 
 
-def upload_image_in_memory_to_s3(image_bytes_io, object_name):
+def generate_image(image_sugestion: str, aspect_ratio: str = "16:9") -> str:
+    response = get_imagine_request(image_sugestion, aspect_ratio)
+
+    fetch_response = fetch_image(response['task_id'])
+    print(fetch_response)
+    while fetch_response['status'] != 'finished':
+        print('waiting 20s...')
+        time.sleep(20)
+        fetch_response = fetch_image(response['task_id'])
+        print(fetch_response)
+
+        if fetch_response['status'] == 'failed':
+            print(fetch_response)
+            return None
+
+    image_url = fetch_response['task_result']['image_url']
+    task_id = response['task_id']
+    file_name =  f'{task_id}.png'
+    downloaded_image = download_image_in_memory(image_url)
+    if downloaded_image:
+        cropped_images = crop_quadrants_in_memory(downloaded_image)
+
+    object_name = f'text_to_image_generator/{file_name}'
+    image_url = upload_object_in_memory_to_s3(cropped_images[0], object_name)
+    print(image_url)
+    return image_url
+
+def send_to_generate_avatar_heygen(text, avatar_id='bd89c0388a9444e49183cb6ec919547d', test=False):
+    headers = {
+        'X-Api-Key': st.secrets["HEYGEN_API_KEY"],  # replace with your method to get the API key
+        'Content-Type': 'application/json',
+    }
+
+    json_data = {
+        'background': '#012A4A',
+        'clips': [
+            {
+                'avatar_id': avatar_id,
+                'avatar_style': 'normal',
+                'input_text': text,
+                'offset': {
+                    'x': 0,
+                    'y': 0,
+                },
+                'scale': 1,
+                'voice_id': 'e9a57ec649c8e7db9d8104529374b2c3',
+            },
+        ],
+        'ratio': '16:9',
+        'test': test,
+        'version': 'v1alpha',
+    }
+
+    result = requests.post('https://api.heygen.com/v1/video.generate', headers=headers, json=json_data)
+    return result.status_code, result.json()
+
+def get_generated_avatar_heygen(video_id):
+    headers = {
+        'X-Api-Key': st.secrets["HEYGEN_API_KEY"],  # replace with your method to get the API key
+    }
+
+    params = {
+        'video_id': video_id,
+    }
+
+    response = requests.get('https://api.heygen.com/v1/video_status.get', params=params, headers=headers)
+    return response.status_code, response.json()
+
+def generate_avatar_heygen_with_audio_file(audio_url, avatar_id='bd89c0388a9444e49183cb6ec919547d', is_teste=False):
+    headers = {
+        'X-Api-Key': st.secrets["HEYGEN_API_KEY"],  # replace with your method to get the API key
+        'Content-Type': 'application/json',
+    }
+
+    json_data = {
+        'video_inputs': [
+            {
+                'character': {
+                    'type': 'avatar',
+                    'avatar_id': avatar_id,
+                    'avatar_style': 'normal',
+                },
+                'voice': {
+                    'type': 'audio',
+                    'audio_url': audio_url,
+                },
+                'background': {
+                    'type': 'color',
+                    'value': '#008000',
+                },
+            },
+        ],
+        'test': is_teste,
+        'aspect_ratio': '16:9',
+    }
+
+    response = requests.post('https://api.heygen.com/v2/video/generate', headers=headers, json=json_data)
+    return response.status_code, response.json()
+
+def fetch_narration_in_memory(text, voice_id, stability=0.5, similarity_boost=0.5, style=0.2, model_id = 'eleven_monolingual_v1'):
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+
+    payload = {
+        "model_id": model_id,
+        "text": text,
+        "voice_settings": {
+            "similarity_boost": similarity_boost,
+            "stability": stability,
+            "style": style
+        }
+    }
+    headers = {
+        "xi-api-key": st.secrets["xi_api_key"],
+        "Content-Type": "application/json"
+    }
+
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    audio_data = BytesIO(response.content)
+    return audio_data
+
+def upload_object_in_memory_to_s3(image_bytes_io, object_name):
     bucket_name = 'apoia-cdn'
     BASE_URL = 'https://apoia-cdn.s3.sa-east-1.amazonaws.com/'
 
@@ -64,7 +187,6 @@ def get_imagine_request(prompt, aspect_ratio="16:9", ):
     response = requests.post(endpoint, headers=headers, json=data)
 
     return response.json()
-
 
 def crop_and_save_quadrants(image_path, output_folder):
     try:
