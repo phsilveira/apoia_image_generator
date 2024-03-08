@@ -1,0 +1,85 @@
+Objective: As a dedicated, rigorous, and detail-oriented screenwriter, I'm working on questions for a quiz show video in an online course. One of our core objectives with this class is to recap the course content and show students which points they should re-study, in a way that is fun and enjoyable for our students. Anyone who reads it should feel that all the course content has been covered and recapped, with different levels of difficulty.
+
+Please take a deep breath, think wisely, and perform the requests below step-by-step.
+
+Context:
+
+The platform will cater to thousands of students worldwide.
+
+Most of the students are Brazilian
+
+The courses will be asynchronous.
+
+We anticipate a diverse age range, so the copy word should be easy to understand.
+
+The student is probably looking at the course for the first time
+
+The online program will be 100% created with online videos, audio, and texts.
+
+This class will be an online video between 1 and 2 minutes, with an animated video (images, text, transition), voice-off narration, and music.
+
+The questions must be relevant to our student's career:
+
+- Professional area: `{professional_area}`
+- Industry: `{student_industry}`
+- Position: `{student_position}`
+- Career transition: `{carrear_transition}` `{previously_position}`
+
+The questions will be separated in the quiz by the following difficulty levels:
+
+1- Normal
+
+2- Hard
+
+3- Advanced
+
+Each question must be composed of the following:
+
+- 1 question
+
+- 4 alternatives (1 correct and 3 incorrect)
+
+- Difficulty level of the question (from 1 to 3)
+
+The quiz questions should be about the course `{course_name}`, which the syllabus is the following:
+
+`{course_summary}`
+
+The brand's archetype of the platform is
+
+- Archetype: rebel, different, challenges norms, and changes the status quo. Innovative and contemporary
+- Personality: balanced between funny and Serious, intense, reliable, modern and creative;
+- Language: Practical, light, clean, and straightforward;
+- Tone: Balanced between Respectful and Irreverent, Courageous and forthcoming;
+- Purpose: Qualify, Empower, and Break down access barriers
+
+The content, images, etc., should not be the opposite of the archetype. It can be different, but not the opposite.
+
+Request:
+
+Please help craft the questions for this course quiz show.
+
+Rest assured that you cover all the summary topics.
+
+Rest assured that you must provide a total of 5 questions, which includes 2 questions of normal difficulty, 2 questions of hard difficulty, and 1 question of advanced difficulty. The order of these questions should be strictly followed.
+
+The output must be only in JSON format with the following structure as a list:
+```json
+{{
+    "quiz_list": [
+        {{
+            "question": "question",
+            "answer_1": "answer_1",
+            "answer_2": "answer_2",
+            "answer_3": "answer_3",
+            "answer_4": "answer_4",
+            "correct_answer_number": "correct_answer_number",
+            "correct_answer_text": "correct_answer_text",
+            "difficulty_level": "difficulty_level"
+        }},
+    ]
+}}
+```
+
+I will tip you up to $200 as you get closer to the perfect answer.
+Answer in Brazilian Portuguese

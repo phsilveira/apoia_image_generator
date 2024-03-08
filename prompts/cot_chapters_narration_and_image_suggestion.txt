@@ -1,0 +1,97 @@
+Objective: As a dedicated, detail-oriented, and creative advertising professional and professor, I'm working on the script for the introduction class of an online course. We split this introductory class into many parts, but now we focus on the summary. One of our core objectives with this part is to present the course's outline through a conscious, assertive, concise, and straightforward class. I'm particularly interested in creating a class script to delight, incite, and push each student more deeply into the course and engage with the following classes while giving him a complete overview of all the main topics that he will cover in the course.
+
+Please take a deep breath, think wisely, and perform the requests below step-by-step
+
+Context:
+
+The platform will cater to thousands of students worldwide.
+
+The courses will be asynchronous.
+
+We anticipate a diverse age range, so the copy word should be easy to understand.
+
+This class is the third part of the introductory class.
+
+This script should focus on presenting the course content and showing the student the relevance that this content will have in the person's professional or practical life.
+
+The online course will be 100% created with online videos, audio, and texts.
+
+This class will be an online video between 1 and 2 minutes, with animated video (images, text, transition), voice-off narration, and music.
+
+The script must be relevant to our student's career. This should be used in examples and when explaining the relevance of each course chapter to the student's professional life:
+
+- Professional area: `{professional_area}`
+- Industry: `{student_industry}`
+- Position: `{student_position}`
+- Career transition: `{carrear_transition}` `{previously_position}`
+
+The name of the course is `{course_name}`, and its summary list of chapters below is below.
+`{course_summary}`
+
+The brand's archetype of the platform is
+
+- Archetype: rebel, different, challenges norms, and changes the status quo. Innovative and contemporary
+    - Personality: balanced between funny and Serious, intense, reliable, modern, and creative;
+    - Language: Practical, light, clean, and straightforward;
+    - Tone: Balanced between Respectful and Irreverent, Courageous and forthcoming;
+    - Purpose: Qualify, Empower, and Break down access barriers
+
+The content, images, etc., should not be the opposite of the archetype. It can be different, but not the opposite.
+
+When using people images, the scenes described in the script should convey diversity and inclusion in the description.
+
+Most of the students are Brazilian
+
+Request:
+
+Please help craft a conscious, assertive, concise, and straightforward script. It should have a lot of practical information and examples regarding the topics. Avoid focusing on theory.
+
+The script should focus on the video narration a professional in the area will make.
+
+When writing down the narration, to guarantee more variance in the tone and engagement, use exclamation points.
+
+When writing down the narration, to make the speech more natural, use dashes and semi-colons to add pauses to the narration.
+
+When there is a question in the narration, the first word of the sentence and the last word before the question mark must be in caps.
+
+When writing down the narration, please put it in all caps to emphasize any word.
+
+Please exaggerate these elements: exclamation points, dashes, semi-colons, and caps.
+
+The script should only present the summary. Don't include an opening, introductory, or closing parts or narration in the script.
+
+It would help if you split the script into scenes, briefly describing three image suggestions for each scene.
+
+You must include one scene per chapter of the summary.
+
+The output must be in JSON format following this structure:
+```
+{{'scene': [{{
+    'scene_title': 'scene_title',
+    'narration': 'narration',
+    'image_description_suggestion_1': 'image_description_suggestion_1',
+    'image_description_suggestion_2': 'image_description_suggestion_2',
+    'image_description_suggestion_3': 'image_description_suggestion_3',
+}}, ]}}
+```
+
+The scene title and the narration must be in Brazilian Portuguese.
+
+The scene title must be up to 30 characters long.
+
+The suggested images must be in English.
+
+The image description should be detailed but not involving complex elements:
+
+Give preference to ultra-realistic images with only one person
+
+If you suggest an image with people (not mandatory), please provide a specific physical description (gender, color, race, hair, and age) for each person.
+Example of physical description: A Brazilian male team leader, around 36 years old, with white glasses, short dark hair, and medium skin tone is...
+
+The image suggestion must not contain the following words: young, animated, conference call
+
+The angle of the image should be described, for example, back view, whole body, close-up shot)
+
+The image description should not contain icons, brands, signs, or signs with lettering.
+
+I will tip you up to $200 for the perfect answer.

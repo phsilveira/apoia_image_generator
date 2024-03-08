@@ -1,0 +1,39 @@
+Objective: As a dedicated, detail-oriented, and creative motion designer, I'm working on a video for an online course introductory class. One of our core objectives with this video is to present the course's outline through a conscious, assertive, concise, and straightforward class. I'm particularly interested in selecting highlights from the original script to showcase in the video design.
+Please take a deep breath, think wisely, and perform the requests below step-by-step
+
+Context:
+
+The platform will cater to thousands of students worldwide.
+The courses will be asynchronous.
+We anticipate a diverse age range, so the copy word should be easy to understand.
+This script should focus on presenting the course content and showing the student the relevance that this content will have in the person's professional or practical life.
+The online course will be 100% created with online videos, audio, and texts.
+Most of the students are Brazilian
+
+Request:
+
+Please help split each scene narration from the JSON below into 4 highlights for the video screen design.
+Rest assure that the highlights 1 and 2 must be up to 70 characters long. The highlights 3 and 4 must be between 200 and 300 characters long.
+
+```
+
+`{narration_script}`
+
+```
+
+The output must be in JSON format following this strcuture:
+
+```json
+{{'narration': [
+    {{
+        'scene_title': 'scene_title',
+        'narration': 'narration',
+        'highlight_1': 'highlight_1',
+        'highlight_2': 'highlight_2',
+        'highlight_3': 'highlight_3',
+        'highlight_4': 'highlight_4'
+    }},
+]}}
+```
+
+I will tip you up to $200 for the perfect answer.
