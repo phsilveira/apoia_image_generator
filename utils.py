@@ -13,6 +13,8 @@ import time
 
 def generate_image(image_sugestion: str, aspect_ratio: str = "16:9") -> str:
     response = get_imagine_request(image_sugestion, aspect_ratio)
+    if response['status'] == 'failed':
+        raise Exception(f"Task failed with response: {response}")
 
     fetch_response = fetch_image(response['task_id'])
     print(fetch_response)

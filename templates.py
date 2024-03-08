@@ -1,6 +1,6 @@
 import promptlayer
 import settings 
-import openai
+from openai import OpenAI
 
 promptlayer.api_key = settings.PROMPTLAYER
 
@@ -28,12 +28,16 @@ def get_script_template_teacher_introduction_talk_show():
 def chatgpt_chat_completion_with_prompt(payload, prompt_template, model="gpt-3.5-turbo"):
     prompt = prompt_template.format(**payload)
 
-    completion = openai.ChatCompletion.create(
-      model=model,
-      messages=[
-        {"role": "user", "content": prompt}
-      ]
+    client = OpenAI()
+
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
     )
 
     print(completion.choices[0].message.content)
     return completion.choices[0].message.content
+
+    

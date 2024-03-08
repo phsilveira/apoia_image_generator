@@ -6,7 +6,8 @@ import hmac
 from PIL import Image
 import requests
 import time
-from templates import chatgpt_chat_completion_with_prompt, get_image_improvement_english_template, get_image_improvement_template, get_midjourney_template
+from scripts import Video
+from templates import chatgpt_chat_completion_with_prompt, get_image_improvement_english_template, get_image_improvement_template, get_midjourney_template, get_prompt_template_teacher_introduction_talk_show, get_script_template_teacher_introduction_talk_show
 from utils import (fetch_narration_in_memory, generate_avatar_heygen_with_audio_file, get_generated_avatar_heygen, get_imagine_request, 
                    fetch_image, 
                    download_image_in_memory,
@@ -173,64 +174,38 @@ def script_generator():
     st.write("Script Generator")
 
     templates = {
-        "Template 1.1.4": "This is the text for template 1.",
-        "Template 1.2.2": "This is the text for template 2.",
-        "Template 1.5.2": "This is the text for template 2."
+        "Template 1.4.4": "This is the text for template 2."
     }
 
     selected_template = st.selectbox("Select a template:", list(templates.keys()))
-    course_name = st.text_input('Course Name:', 'Gestão de Projetos')
-    student_name = st.text_input('Student Name:', 'João')
-    professor_name = st.text_input('professor_name', 'Paulo')
-
-    with st.expander("Show/Hide More Options"):
-        professor_area = st.text_input('professor_area', 'Tech')
-        professor_academic_background = st.text_input('professor_academic_background', 'Master in computer science')
-        professor_achievements = st.text_input('professor_achievements', 'Published 3 books, 10 years of experience, 5 years of experience in the industry')
-        professor_domain_traits_from_spreadsheet = st.text_input('professor_domain_traits_from_spreadsheet', )
-        professor_general_disposition_from_spreadsheet = st.text_input('professor_general_disposition_from_spreadsheet')
-        professor_hobbies = st.text_input('professor_hobbies', 'reading, playing guitar')
-        professor_personality_type_from_spreadsheet = st.text_input('professor_personality_type_from_spreadsheet', 'Introvert, Intuitive, Thinking, Judging')
-        professor_professional_background = st.text_input('professor_professional_background', '10 years of experience in the STARTUP industry')
-
-        script_template = st.text_area('Script template:', get_script_template_teacher_introduction_talk_show())
-        prompt_template = st.text_area('Prompt template:', get_prompt_template_teacher_introduction_talk_show())
 
 
     if st.button('Generate script'):
         with st.spinner("Loading..."):
-            payload = {
-                'course_name': course_name,
-                'student_name': student_name,
-                'professor_name': professor_name,
-                'professor_area': professor_area,
-                'professor_academic_background': professor_academic_background,
-                'professor_achievements': professor_achievements,
-                'professor_domain_traits_from_spreadsheet': professor_domain_traits_from_spreadsheet,
-                'professor_general_disposition_from_spreadsheet': professor_general_disposition_from_spreadsheet,
-                'professor_hobbies': professor_hobbies,
-                'professor_personality_type_from_spreadsheet': professor_personality_type_from_spreadsheet,
-                'professor_professional_background': professor_professional_background,
-            }
-            answer = chatgpt_chat_completion_with_prompt(payload, prompt_template, model=st.session_state.get("model_option", 'gpt-3.5-turbo'))
+            video = Video()
+            scenes_df = video.run()
 
-            payload['answer'] = answer
+            # Display the DataFrame
+            st.dataframe(scenes_df)
 
-            script = script_template.format(**payload)
-            st.success(script)
-            # try:
-            #     answer_dict = json.loads(answer)
-            # except Exception as e:
-            #     st.error(f"Error: {e}")
+            # Offer option to download DataFrame as a CSV file
+            csv = scenes_df.to_csv(index=False)
+            st.download_button(
+                label="Download CSV",
+                data=csv,
+                file_name="scenes.csv",
+                mime="text/csv"
+            )
+            
+            st.success('Script generated successfully.')
 
 
 def main():
     st.title("Apoia Video Engine - Toolbox")
     st.write("This app is a toolbox to help the video production.")
 
-    # Sidebar
     if not check_password():
-        st.stop()  # Do not continue if check_password is not True.
+        st.stop()
 
     st.sidebar.title("Navigation")
     selection = st.sidebar.radio("Go to", [
