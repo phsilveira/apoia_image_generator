@@ -23,7 +23,6 @@ The script must be relevant to our student's career. This should be used in exam
 - Professional area: `{professional_area}`
 - Industry: `{student_industry}`
 - Position: `{student_position}`
-- Career transition: `{carrear_transition}` `{previously_position}`
 
 The name of the course is `{course_name}`, and its summary list of chapters below is below.
 `{course_summary}`

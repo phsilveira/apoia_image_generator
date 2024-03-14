@@ -1,0 +1,52 @@
+Detalhe ainda mais o sumário abaixo:
+- mantenha os capítulos e seções existentes,
+- divida cada seção em várias subseções específicas
+- cada seção deve ter ao menos 2 subseções
+
+Seja o mais específico possível nas subseções.
+Não coloque dois assuntos, mesmo que relacionados, na mesma subseções.
+Tenha certeza de colocar as subseções na mesma linha das suas seções relacionadas, sem necessidade de seguir a ordem de capítulos e seções anterior.
+
+O output desse sumário detalhado deve ser um JSON no seguinte formato:
+
+{{
+  \"course_name\": \"Exemplo do nome do curso\",
+  \"chapters\": [
+    {{
+      \"chapter_name\": \"Nome do capítulo 1\",
+      \"sections\": [
+        {{
+          \"section_name\": \"Seção 1\",
+          \"subsections\": [\"Subseção 1\", \"Subseção 2\"]
+        }},
+        {{
+          \"section_name\": \"Seção 2\",
+          \"subsections\": [\"Subseção 1\", \"Subseção 2\"]
+        }}
+      ]
+    }},
+    {{
+      \"chapter_name\": \"Nome do capítulo 2\",
+      \"sections\": [
+        {{
+          \"section_name\": \"Seção 1\",
+          \"subsections\": [\"Subseção 1\", \"Subseção 2\"]
+        }},
+        {{
+          \"section_name\": \"Seção 2\",
+          \"subsections\": [\"Subseção 1\", \"Subseção 2\"]
+        }},
+        {{
+          \"section_name\": \"Seção 3\",
+          \"subsections\": [\"Subseção 1\", \"Subseção 2\"]
+        }}
+      ]
+    }}
+  ]
+}}
+
+No texto do CSV, coloque apenas os títulos dos capítulos, seções, não coloque referências como Capítulo 1, seção 1, etc ou mesmo o número 1, 1.1. nas células
+
+O sumário deveria cobrir todos os tópicos relevantes para aquele tema, sem repetir tópicos ou usar tópicos não relevantes
+
+{course_outline}

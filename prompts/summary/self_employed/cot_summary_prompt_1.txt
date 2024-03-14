@@ -1,0 +1,13 @@
+Construa um experimento prático para avaliar se o aluno possui as competências necessárias para se tornar {course_area} , de maneira prática, como se fosse uma prova de certificação.
+
+Considere que o contexto desse experimento deverá estar relacionado com os parâmetros abaixo:
+
+Tema: {course_theme}
+Área: {course_area}
+Como quero ser chamado: {student_name}
+Objetivo: {student_objective}
+
+As instruções para o experimento deve ter três partes: contexto; equipamentos necessários; e instruções ao aluno
+
+O contexto deve incluir dados falsos e/ou instruções para realizar uma prática.
+O fornecimento de dados falsos deve ser feito dentro do contexto do experimento, ou se o volume passar de mais de mais de 10 campos numéricos, ser gerado um arquivo de excel com todos os dados necessários para realizar o experimento.

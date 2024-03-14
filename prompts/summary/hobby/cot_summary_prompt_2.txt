@@ -1,0 +1,33 @@
+Agora vamos planejar quais conteúdos e temas o aluno deverá estudar até a realização do desafio em anexo, para estar preparado para executar todos os passos ou etapas com assertividade e confiança.
+
+Liste quais conteúdos e temas você recomendaria para o aluno estudar para atingir esse objetivo acima.
+Os conteúdos não devem mencionar diretamente o desafio ou partes do desafio.
+
+Considere que a esses temas estarão em conteúdos assíncronos já existentes na internet
+
+Os temas devem ser extremamente práticos e assertivos, incentivando o aluno a colocar a mão na massa em cada conteúdo ou aula
+
+Divida os temas listados em uma hierarquia de capítulo e seções, como um sumário de curso.
+
+Transforme esse sumário em um json no seguinte formato:
+
+{{
+  \"course_name\": \"Exemplo do nome do curso\",
+  \"chapters\": [
+    {{
+      \"chapter_name\": \"Nome do capítulo 1\",
+      \"sections\": [\"Seção 1\", \"Seção 2\"]
+    }},
+    {{
+      \"chapter_name\": \"Nome do capítulo 2\",
+      \"sections\": [\"Seção 1\", \"Seção 2\", \"Seção 3\"]
+    }}
+  ]
+}}
+
+O sumário deveria cobrir todos os tópicos relevantes para aquele tema, sem repetir tópicos ou usar tópicos não relevantes.
+
+Não é necessário incluir um capítulo ou seção de introdução com boas-vindas e objetivos do curso, vá direto para o conteúdo relevante para o aluno.
+
+Desafio:
+{final_project}

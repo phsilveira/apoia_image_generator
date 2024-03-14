@@ -1,0 +1,14 @@
+Construa um caso prático para avaliar se o candidato {student_name} demonstra o domínio da habilidade {course_theme}, de maneira profunda e detalhada, como se fosse utilizado em uma entrevista de trabalho.
+
+Considere que o contexto desse caso prático deverá estar relacionado com a {course_area}, objetivo {student_objective} e que a pessoa trabalha em uma empresa da indústria {student_industry} , localizada no Brasil.
+
+Nível de proficiência: {student_proficiency}
+
+O caso prático deve ter três partes: contexto; dados fornecidos ao candidato (forneça dados falsos para ele simular uma análise); e instruções ao candidato
+
+O fornecimento de dados falsos deve ser feito dentro do contexto da questão, ou se o volume passar de mais de 10 campos numéricos, ser gerado um arquivo de excel com todos os dados necessários para responder a questão.
+
+Se houver a necessidade de análise de dados para a questão, gere os dados em formato CSV e não omita nenhum dado por simplicidade.
+    - Se houver diferentes conjuntos de dados, garanta que eles estão com o mesmo formato, em termos de linhas, colunas e totais
+    - Limpe os metadados da tabela
+    - Crie a tabela em um formato exportável

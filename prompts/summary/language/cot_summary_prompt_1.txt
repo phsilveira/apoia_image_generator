@@ -1,0 +1,16 @@
+Como um professor particular que ensina {course_theme} para alunos querendo começar ou solidificar seu conhecimento no idioma, você está recebendo um novo aluno hoje:
+
+Nome do aluno: {student_name}
+Quer aprender: {course_theme}
+Objetivo do aluno: {student_objective}
+Nível de proficiência: {student_proficiency}
+
+Vamos criar uma avaliação para validar se o aluno atingiu um nível satisfatório no idioma para realizar seu objetivo acima. A avaliação deve se assemelhar a uma prova de proficiência.
+
+Divida a avaliação em 4 partes: Compreensão Auditiva, Leitura, Escrita e Fala.
+Crie as questões detalhadas para cada das partes da avaliação.
+Nas questões com áudio, escreva qual texto deve ser narrado para realizar a questão.
+Nas questões com texto, inclua o texto completo para realização da questão, o texto deverá ser comprido, com pelo menos 2 parágrafos.
+Todas as questões deverão ter relação com o objetivo do aluno aprendendo esse idioma.
+Ajuste quantidade de questões de cada parte conforme o necessário para atingir o objetivo do aluno, seja mais audição, leitura, escrita ou fala.
+A avaliação deve ser curta, o aluno deve ser capaz de realizá-la entre 1 hora e 1 hora e meia.
