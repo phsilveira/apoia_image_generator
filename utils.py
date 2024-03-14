@@ -12,8 +12,8 @@ import time
 from unidecode import unidecode
 
 
-def generate_image(image_sugestion: str, aspect_ratio: str = "16:9") -> str:
-    response = get_imagine_request(image_sugestion, aspect_ratio)
+def generate_image(image_sugestion: str, aspect_ratio: str = "16:9", process_mode: str = "relax") -> str:
+    response = get_imagine_request(image_sugestion, aspect_ratio, process_mode)
     if response['status'] == 'failed':
         raise Exception(f"Task failed with response: {response}")
 
@@ -168,7 +168,7 @@ def fetch_image(task_id):
     # print(json.dumps(response.json(), indent=4))
     return response.json()
 
-def get_imagine_request(prompt, aspect_ratio="16:9", process_mode="fast"):
+def get_imagine_request(prompt, aspect_ratio="16:9", process_mode="relax"):
 
 
     X_API_KEY = settings.X_API_KEY
@@ -179,7 +179,7 @@ def get_imagine_request(prompt, aspect_ratio="16:9", process_mode="fast"):
     }
 
     data = {
-        "process_mode": "fast",
+        "process_mode": process_mode,
         "prompt": prompt,
         "aspect_ratio": aspect_ratio,
         "webhook_endpoint": "",
