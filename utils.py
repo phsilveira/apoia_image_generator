@@ -9,6 +9,7 @@ from io import BytesIO
 import pickle
 import streamlit as st
 import time
+from unidecode import unidecode
 
 
 def generate_image(image_sugestion: str, aspect_ratio: str = "16:9") -> str:
@@ -167,7 +168,7 @@ def fetch_image(task_id):
     # print(json.dumps(response.json(), indent=4))
     return response.json()
 
-def get_imagine_request(prompt, aspect_ratio="16:9", ):
+def get_imagine_request(prompt, aspect_ratio="16:9", process_mode="fast"):
 
 
     X_API_KEY = settings.X_API_KEY
@@ -181,7 +182,6 @@ def get_imagine_request(prompt, aspect_ratio="16:9", ):
         "process_mode": "fast",
         "prompt": prompt,
         "aspect_ratio": aspect_ratio,
-        "process_mode": "mixed",
         "webhook_endpoint": "",
         "webhook_secret": ""
     }
@@ -283,3 +283,8 @@ def slugify(text):
     slug = re.sub(r"\-+", "-", slug).strip("-")
 
     return slug
+
+def open_image_from_url(image_url):
+    response = requests.get(image_url, stream=True)
+    response.raise_for_status()
+    return Image.open(response.raw)

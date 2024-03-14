@@ -1,0 +1,28 @@
+Quais os temas que você recomendaria a pessoa estudar para conseguir responder o caso abaixo e ser considerado um ótimo candidato para você.
+
+Considere que a esses temas estarão em conteúdos assíncronos já existentes na internet, e que não fazem referência à indústria {student_industry} ou ao cargo da pessoa {student_role_desired}
+
+Considere a formação do candidato para ser um {student_role_desired} e adicione somente conteúdos relacionados com a habilidade do caso, evitando conteúdos relacionados com a formação do candidato. Assuma que o candidato tem formação superior e já conhece esses conceitos não relacionados com a habilidade.
+
+Divida os temas em uma hierarquia de capítulo e seções.
+
+Transforme esse sumário em um json no seguinte formato:
+
+{{
+  \"course_name\": \"Exemplo do nome do curso\",
+  \"chapters\": [
+    {{
+      \"chapter_name\": \"Nome do capítulo 1\",
+      \"sections\": [\"Seção 1\", \"Seção 2\"]
+    }},
+    {{
+      \"chapter_name\": \"Nome do capítulo 2\",
+      \"sections\": [\"Seção 1\", \"Seção 2\", \"Seção 3\"]
+    }}
+  ]
+}}
+
+O sumário deveria cobrir todos os tópicos relevantes para aquele tema, sem repetir tópicos ou usar tópicos não relevantes
+
+Caso prático:
+{final_project}

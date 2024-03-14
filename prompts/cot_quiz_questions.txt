@@ -23,7 +23,6 @@ The questions must be relevant to our student's career:
 - Professional area: `{professional_area}`
 - Industry: `{student_industry}`
 - Position: `{student_position}`
-- Career transition: `{carrear_transition}` `{previously_position}`
 
 The questions will be separated in the quiz by the following difficulty levels:
 

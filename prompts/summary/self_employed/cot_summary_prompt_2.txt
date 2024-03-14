@@ -1,0 +1,31 @@
+Considerando o experimento em anexo. Quais os temas que você recomendaria a pessoa estudar para conseguir responder desenvolver essas habilidades e ser considerado um excelente profissional para você.
+
+Considere que a esses temas estarão em conteúdos assíncronos já existentes na internet.
+Os conteúdos não devem mencionar diretamente o experimento ou partes do experimento.
+
+Os temas devem ser extremamente práticos e assertivos, aplicando os conhecimentos que serão necessários no dia a dia desse profissional
+
+Divida os temas em uma hierarquia de capítulo e seções.
+
+Transforme esse sumário em um json no seguinte formato:
+
+{{
+  \"course_name\": \"Exemplo do nome do curso\",
+  \"chapters\": [
+    {{
+      \"chapter_name\": \"Nome do capítulo 1\",
+      \"sections\": [\"Seção 1\", \"Seção 2\"]
+    }},
+    {{
+      \"chapter_name\": \"Nome do capítulo 2\",
+      \"sections\": [\"Seção 1\", \"Seção 2\", \"Seção 3\"]
+    }}
+  ]
+}}
+
+O sumário deveria cobrir todos os tópicos relevantes para aquele tema, sem repetir tópicos ou usar tópicos não relevantes
+
+Não é necessário incluir um capítulo ou seção de introdução com boas-vindas e objetivos do curso, vá direto para o conteúdo relevante para o aluno.
+
+Experimento:
+{final_project}

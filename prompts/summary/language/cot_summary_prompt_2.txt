@@ -1,0 +1,32 @@
+Agora vamos planejar quais conteúdos e temas o aluno deverá estudar até a realização dessa avaliação, para estar preparado para responder às questões em anexo com assertividade e confiança.
+
+Liste quais conteúdos e temas você recomendaria para o aluno estudar para progredir do seu nível de proficiência atual até o nível necessário para responder a avaliação.
+Os conteúdos não devem mencionar diretamente a avaliação ou partes da avaliação.
+
+Considere que a esses temas estarão em conteúdos assíncronos já existentes na internet
+
+Os temas devem ser extremamente práticos e assertivos, aprofundando nos conhecimentos da língua que serão necessários no dia a dia desse aluno e serão relevantes para atingir seu objetivo
+Divida os temas listados em uma hierarquia de capítulo e seções, como um sumário de curso.
+
+Transforme esse sumário em um json no seguinte formato:
+
+{{
+  \"course_name\": \"Exemplo do nome do curso\",
+  \"chapters\": [
+    {{
+      \"chapter_name\": \"Nome do capítulo 1\",
+      \"sections\": [\"Seção 1\", \"Seção 2\"]
+    }},
+    {{
+      \"chapter_name\": \"Nome do capítulo 2\",
+      \"sections\": [\"Seção 1\", \"Seção 2\", \"Seção 3\"]
+    }}
+  ]
+}}
+
+O sumário deveria cobrir todos os tópicos relevantes para aquele tema, sem repetir tópicos ou usar tópicos não relevantes.
+
+Não é necessário incluir um capítulo ou seção de introdução com boas-vindas e objetivos do curso, vá direto para o conteúdo relevante para o aluno.
+
+Questões:
+{final_project}

@@ -1,5 +1,7 @@
+import datetime
 import io
 import json
+import pandas as pd
 import streamlit as st
 import openai
 import hmac
@@ -7,19 +9,16 @@ from PIL import Image
 import requests
 import time
 from scripts import Video
+from summary import Summary
 from templates import chatgpt_chat_completion_with_prompt, get_image_improvement_english_template, get_image_improvement_template, get_midjourney_template, get_prompt_template_teacher_introduction_talk_show, get_script_template_teacher_introduction_talk_show
 from utils import (fetch_narration_in_memory, generate_avatar_heygen_with_audio_file, get_generated_avatar_heygen, get_imagine_request, 
                    fetch_image, 
                    download_image_in_memory,
-                   crop_quadrants_in_memory, send_to_generate_avatar_heygen,
+                   crop_quadrants_in_memory, send_to_generate_avatar_heygen, slugify,
                    upload_object_in_memory_to_s3,
-                   generate_image)
+                   generate_image, open_image_from_url)
 
 
-def open_image_from_url(image_url):
-    response = requests.get(image_url, stream=True)
-    response.raise_for_status()
-    return Image.open(response.raw)
 
 def check_password():
     """Returns `True` if the user had the correct password."""
@@ -45,7 +44,7 @@ def check_password():
     return False
 
 def text_to_image_generator():
-    st.write("Text to Avatar Generator using Heygen API")
+    st.write("Text to Image Generator using Midjourney non official API")
     image_suggestion = st.text_input('Enter Image Suggestion (ex: Course name):', 'Análise de crédito para empresas de médio porte')
     # original_image_url = st.text_input('Enter Original Image URL:', )
     # print(original_image_url)
@@ -56,6 +55,7 @@ def text_to_image_generator():
     #     st.image(original_img, caption=original_image_url, use_column_width=True)
 
     aspect_ratio_option = st.selectbox('Aspect Ratio', ['16:9', '9:16', ])
+    process_mode = st.selectbox('Process Mode', ['relax', 'fast', ])
 
     midjourney = st.text_area('Enter Midjourney prompt:', get_midjourney_template())
 
@@ -73,7 +73,7 @@ def text_to_image_generator():
             
             image_scene_prompt = midjourney.format(**{'original_prompt': image_suggestion})
             
-            image_url = generate_image(image_scene_prompt, aspect_ratio=st.session_state.get(aspect_ratio_option, '16:9'))
+            image_url = generate_image(image_scene_prompt, aspect_ratio = aspect_ratio_option, process_mode = process_mode)
             if image_url:
                 st.success(f'Image generated successfully. at {image_url}')
                 try:
@@ -112,9 +112,9 @@ def text_to_speech_generator():
     
     selected_voice = st.selectbox("Select a voice:", ['Rangel Barbosa 02', 'Rachel'])
     text = st.text_area("Enter text:", """Alcançe seus objetivos na medida""")
-    stability = st.slider("Stability:", min_value=0.0, max_value=1.0, value=0.5)
-    similarity_boost = st.slider("Similarity Boost:", min_value=0.0, max_value=1.0, value=0.5)
-    style = st.slider("Style:", min_value=0.0, max_value=1.0, value=0.2)
+    stability = st.slider("Stability:", min_value=0.0, max_value=1.0, value=0.48)
+    similarity_boost = st.slider("Similarity Boost:", min_value=0.0, max_value=1.0, value=0.55)
+    style = st.slider("Style:", min_value=0.0, max_value=1.0, value=0.06)
 
     if st.button('Generate Speech'):
         voice_id = voices[selected_voice]['voice_id']
@@ -129,7 +129,7 @@ def text_to_speech_generator():
         st.download_button(
             label="Download audio file",
             data=audio_data.read(),
-            file_name="audio.mp3",
+            file_name=f'{voice_id}__{stability}__{similarity_boost}__{style}__{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp3',
             mime="audio/mpeg"
         )
 
@@ -174,18 +174,47 @@ def script_generator():
     st.write("Script Generator")
 
     templates = {
-        "Template 1.4.4": "This is the text for template 2."
+        "Template 1.4.4": "This is the text for template 2.",
+        "Template 1.2.1": "This is the text for template 1.",
     }
 
-    selected_template = st.selectbox("Select a template:", list(templates.keys()))
+    template = st.selectbox("Select a template", list(templates.keys()))
+    generate_image_assets = st.checkbox('Generate Image Assets', value=False)
+    generate_audio_assets = st.checkbox('Generate Audio Assets', value=False)
+    generate_avatar_assets = st.checkbox('Generate Avatar Assets', value=False)
 
+    final_course = st.file_uploader('Final Course JSON:', type=['json'])
 
     if st.button('Generate script'):
         with st.spinner("Loading..."):
-            video = Video()
-            scenes_df = video.run()
+
+            if final_course is None:
+                st.error('Please, upload the final_course json file.')
+                return
+                
+            final_course = json.load(final_course)
+
+            if final_course.get('course_summary') is None or final_course.get('final_project') is None:
+                st.error('Please, upload a valid final_course JSON file.')
+
+            video = Video(
+                onboarding = final_course['onboarding'],
+                course_summary = final_course['course_summary'],
+            )
+            # scenes = video.run()
+            scenes = video.run()[:5]
+
+            if generate_image_assets:
+                scenes = video.generate_image_files(scenes)
+            
+            if generate_audio_assets:
+                scenes = video.generate_audio_files(scenes)
+
+            if generate_avatar_assets:
+                scenes = video.generate_avatar_files(scenes)
 
             # Display the DataFrame
+            scenes_df = pd.DataFrame(scenes)
             st.dataframe(scenes_df)
 
             # Offer option to download DataFrame as a CSV file
@@ -199,6 +228,57 @@ def script_generator():
             
             st.success('Script generated successfully.')
 
+def course_generator():
+    st.write("Course Generator")
+
+    course_type = st.selectbox('Course Type', ['professional', 'hobby', 'language',])
+    
+    student_name = st.text_input('Student Name', 'Marco')
+    course_theme = st.text_input('Course Theme', 'Gestão de Projetos')
+    student_objective = st.text_input('Student Objective', '')
+    student_proficiency = st.selectbox('Student Proficiency', ['Básico', 'Intermediário', 'Avançado'])
+  
+    student_role_desired = None
+    student_industry = None
+    if course_type == 'professional':
+        student_role_desired = st.selectbox('Student Role Desired', ['Junior', 'Pleno', 'Senior', 'Gestor', 'Especialista', 'Gerencia', 'Diretor'])
+        student_industry = st.text_input('Student Industry', 'Bancário')
+
+    course_area = st.text_input('Course Area', 'Finanças')
+
+    if st.button('Generate summary and final project'):
+        with st.spinner("Loading..."):
+            summary_generator = Summary(
+                course_type=course_type, 
+                student_name=student_name, 
+                course_theme=course_theme, 
+                course_area=course_area, 
+                student_objective=student_objective, 
+                student_role_desired=student_role_desired, 
+                student_industry=student_industry, 
+                student_proficiency=student_proficiency
+            )
+            final_course = summary_generator.generate_complete_course()
+
+            st.json(final_course)
+
+            summary_df = summary_generator.convert_dict_summary_to_df(final_course['course_summary'])
+
+            st.dataframe(summary_df)
+
+            st.text_area('Final Project', final_course['final_project'])
+
+            st.download_button(
+                label="Download Final Course JSON",
+                data=json.dumps(final_course, indent=4),
+                file_name=f"final_course__{course_type}__{slugify(course_theme)}__{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json",
+                mime="text/json"
+            )
+            
+            st.success('Course generated successfully.')
+
+
+            
 
 def main():
     st.title("Apoia Video Engine - Toolbox")
@@ -213,6 +293,7 @@ def main():
         "Text to Speech Generator (ElevenLabs API)",
         "Text to Avatar Generator (Heygen API)",
         "Script Generator",
+        "Course Generator",
     ])
 
     if selection == "Text to Image Generator (Midjourney non official API)":
@@ -223,6 +304,8 @@ def main():
         text_to_avatar_generator()
     elif selection == "Script Generator":
         script_generator()
+    elif selection == "Course Generator":
+        course_generator()
 
     st.sidebar.header('Settings')
     st.session_state["model_option"] = st.sidebar.selectbox('LLM Model', ['gpt-3.5-turbo', 'gpt-4',])

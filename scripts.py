@@ -1,20 +1,25 @@
+import datetime
+from concurrent.futures import ThreadPoolExecutor
+import time
 from typing import List
+import uuid
+from tqdm import tqdm
 import json
 import re
 import settings
 from openai import OpenAI
 import pandas as pd
 
+from utils import fetch_narration_in_memory, generate_avatar_heygen_with_audio_file, generate_image, get_generated_avatar_heygen, upload_object_in_memory_to_s3
+
 
 class Video:
 
     config = dict(
-        professional_area = 'Education and Finance',
-        student_industry = 'Bancos',
-        student_position = 'Diretor de Finanças',
-        carrear_transition = False,
-        previously_position = '',
-        course_name = 'Gestão de projetos',
+        student_industry = 'Genérico',
+        professional_area = 'Genérico',
+        student_position = 'Genérico',
+        course_name = 'Genérico',
         course_summary = {
             "course_name": "Curso de Gestão de Projetos Financeiros",
             "chapters": [
@@ -149,6 +154,8 @@ class Video:
         'correct_answer_text': '',
         'correct_answer_number': '',
         'correct_letter_image_url': '',
+        'narration_answer_text': '',
+        'narration_answer_audio_url': '',
     }
 
     choice_number_to_url = {
@@ -158,8 +165,10 @@ class Video:
         "4": "https://apoia-cdn.s3.sa-east-1.amazonaws.com/quiz_assets_letters/D1_0000.png",
     }
 
-    def __init__(self):
+    def __init__(self, onboarding, course_summary):
         self.client = OpenAI(api_key = settings.OPENAI_API_KEY )
+        self.config.update(onboarding)
+        self.config['course_summary'] = course_summary
 
     def run(self):
         # setup scenes
@@ -173,7 +182,7 @@ class Video:
         # generate assets
 
 
-        return pd.DataFrame(scenes)
+        return scenes
 
     def setup_intro_scene(self) -> List[dict]:
         # INTRODUÇÃO RESUMO CURSO - TEMPLATE
@@ -352,14 +361,72 @@ class Video:
         scenes.append(scene_brand_signature)
         return scenes
 
-    def generate_image_files(self):
-        pass
+    def generate_image_files(self, scenes: List[dict]) -> List[dict]:
+        print('Generating images')
 
-    def generate_audio_files(self):
-        pass
+        def generate_image_for_scene(scene, i):
+            if scene['images_length'] > 0:
+                for j in range(1, scene['images_length'] + 1):
+                    image_prompt = scene[f'image_description_suggestion_{j}']
+                    scenes[i][f'image_{j}_url'] = generate_image(image_prompt, aspect_ratio = '16:9') # f'{i}_image_{j}_url'
 
-    def generate_avatar_files(self):
-        pass
+        with ThreadPoolExecutor() as executor:
+            executor.map(generate_image_for_scene, scenes, range(len(scenes)))
+
+        return scenes
+
+    def generate_audio_files(self, scenes: List[dict]) -> List[dict]:
+        print('Generating audio')
+
+        def generate_audio_for_scene(scene):
+            if scene['narration_text']:
+                scene['narration_audio_url'] = self.generate_audio_file_and_upload(scene['narration_text'])
+
+            if scene['narration_answer_text']:
+                scene['narration_answer_audio_url'] = self.generate_audio_file_and_upload(scene['narration_answer_text'])
+
+        with ThreadPoolExecutor() as executor:
+            list(executor.map(generate_audio_for_scene, scenes))
+
+        return scenes
+
+    def generate_audio_file_and_upload(self, narration_text):
+        voice_id = "rVYXh5OmQcvchhNYtBWe"
+        model_id = "eleven_multilingual_v2"
+        stability = 0.48
+        similarity_boost = 0.55
+        style = 0.06
+
+        audio_data = fetch_narration_in_memory(narration_text, voice_id, stability, similarity_boost, style, model_id)
+        # audio_url = upload_object_in_memory_to_s3(audio_data, f'narration/{voice_id}__{stability}__{similarity_boost}__{style}__{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp3')
+        audio_url = upload_object_in_memory_to_s3(audio_data, f'narration/{uuid.uuid4()}.mp3')
+
+        return audio_url
+
+    def generate_avatar_files(self, scenes: List[dict]) -> List[dict]:
+        print('Generating avatares')
+
+        def generate_avatar_for_scene(scene):
+            if scene['use_avatar']:
+                audio_url = scene['narration_audio_url']
+                result = generate_avatar_heygen_with_audio_file(audio_url=audio_url, is_teste=True)
+                video_id = result[1]['data']['video_id']
+                result = get_generated_avatar_heygen(video_id)
+
+                while result[1]['data']['status'] != 'completed':
+                    time.sleep(10)
+                    print(result)
+                    result = get_generated_avatar_heygen(video_id)
+
+                video_url = result[1]['data']['video_url']
+                # video_url = upload_object_in_memory_to_s3(audio_data, f'narration/{uuid.uuid4()}.mp3')
+                print(f"Avatar {scene['target']}: {video_url}")
+                scene['avatar_video_url'] = video_url
+
+        with ThreadPoolExecutor() as executor:
+            list(executor.map(generate_avatar_for_scene, scenes))
+
+        return scenes
 
     def cot_chapters_narration_and_image_suggestion(self, ) -> List[dict]:
         with open('prompts/cot_chapters_narration_and_image_suggestion.txt', 'r') as file:
