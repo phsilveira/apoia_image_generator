@@ -368,7 +368,7 @@ class Video:
             if scene['images_length'] > 0:
                 for j in range(1, scene['images_length'] + 1):
                     image_prompt = scene[f'image_description_suggestion_{j}']
-                    scenes[i][f'image_{j}_url'] = generate_image(image_prompt, aspect_ratio = '16:9') # f'{i}_image_{j}_url'
+                    scenes[i][f'image_{j}_url'] = generate_image(image_prompt, aspect_ratio = '16:9', process_mode = 'fast') # f'{i}_image_{j}_url'
 
         with ThreadPoolExecutor() as executor:
             executor.map(generate_image_for_scene, scenes, range(len(scenes)))

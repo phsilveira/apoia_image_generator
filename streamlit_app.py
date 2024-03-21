@@ -8,6 +8,7 @@ import hmac
 from PIL import Image
 import requests
 import time
+from fetch_lgu_service import FetchYoutubeLGU
 from scripts import Video
 from summary import Summary
 from templates import chatgpt_chat_completion_with_prompt, get_image_improvement_english_template, get_image_improvement_template, get_midjourney_template, get_prompt_template_teacher_introduction_talk_show, get_script_template_teacher_introduction_talk_show
@@ -202,7 +203,7 @@ def script_generator():
                 course_summary = final_course['course_summary'],
             )
             # scenes = video.run()
-            scenes = video.run()[:5]
+            scenes = video.run()[:3]
 
             if generate_image_assets:
                 scenes = video.generate_image_files(scenes)
@@ -231,6 +232,9 @@ def script_generator():
 def course_generator():
     st.write("Course Generator")
 
+    st.markdown('[GPT-4 and GPT-4 Turbo Documentation](https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo)')
+    model_selection = st.selectbox('LLM Model', ['gpt-4', 'gpt-4-turbo-preview', 'gpt-3.5-turbo', ])
+
     course_type = st.selectbox('Course Type', ['professional', 'hobby', 'language',])
     
     student_name = st.text_input('Student Name', 'Marco')
@@ -248,6 +252,7 @@ def course_generator():
 
     if st.button('Generate summary and final project'):
         with st.spinner("Loading..."):
+            start = time.time()
             summary_generator = Summary(
                 course_type=course_type, 
                 student_name=student_name, 
@@ -258,6 +263,7 @@ def course_generator():
                 student_industry=student_industry, 
                 student_proficiency=student_proficiency
             )
+            summary_generator.model = model_selection
             final_course = summary_generator.generate_complete_course()
 
             st.json(final_course)
@@ -274,10 +280,46 @@ def course_generator():
                 file_name=f"final_course__{course_type}__{slugify(course_theme)}__{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.json",
                 mime="text/json"
             )
+            end = time.time()
             
-            st.success('Course generated successfully.')
+            st.success(f'Course generated successfully in {round(end - start, 1)} seconds')
 
+def fetch_lgus():
+    st.write("Fetch LGUs given a course json")
 
+    final_course = st.file_uploader('Final Course JSON:', type=['json'])
+
+    if st.button('Fetch LGUs'):
+        with st.spinner("Loading..."):
+
+            if final_course is None:
+                st.error('Please, upload the final_course json file.')
+                return
+                
+            final_course = json.load(final_course)
+
+            if final_course.get('course_summary') is None:
+                st.error('Please, upload a valid final_course JSON file.')
+
+            video = FetchYoutubeLGU(
+                onboarding = final_course['onboarding'],
+                course_summary = final_course['course_summary'],
+            )
+
+            # Display the DataFrame
+            scenes_df = pd.DataFrame(scenes)
+            st.dataframe(scenes_df)
+
+            # Offer option to download DataFrame as a CSV file
+            csv = scenes_df.to_csv(index=False)
+            st.download_button(
+                label="Download CSV",
+                data=csv,
+                file_name="scenes.csv",
+                mime="text/csv"
+            )
+            
+            st.success('Script generated successfully.')
             
 
 def main():
@@ -307,8 +349,8 @@ def main():
     elif selection == "Course Generator":
         course_generator()
 
-    st.sidebar.header('Settings')
-    st.session_state["model_option"] = st.sidebar.selectbox('LLM Model', ['gpt-3.5-turbo', 'gpt-4',])
+    # st.sidebar.header('Settings')
+    # st.session_state["model_option"] = st.sidebar.selectbox('LLM Model', ['gpt-3.5-turbo', 'gpt-4',])
 
 
 
