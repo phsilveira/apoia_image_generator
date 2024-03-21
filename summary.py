@@ -5,6 +5,8 @@ import pandas as pd
 
 class Summary:
 
+    model = "gpt-4"
+
     onboarding = {
         "course_type": "professional",
         "student_name": "Marco",
@@ -86,9 +88,9 @@ class Summary:
             self.open_file(prompt_general_cot_prompt_3).format(course_outline=course_outline, **self.onboarding)
         )
 
-    def get_completion(self, context, prompt, model='gpt-4'): 
+    def get_completion(self, context, prompt): 
         response = self.client.chat.completions.create(
-            model = model,
+            model = self.model,
             # response_format = { "type": "json_object" },
             messages = [
                 {"role": "system", "content": f"{context}"},
