@@ -5,7 +5,7 @@ from openai import OpenAI
 import pandas as pd
 import requests
 import settings
-import google.generativeai as genai
+# import google.generativeai as genai
 from youtube_transcript_api import YouTubeTranscriptApi
 from pytube import YouTube
 from bs4 import BeautifulSoup
@@ -126,8 +126,8 @@ class FetchYoutubeLGU():
         if course_summary:
             self.course_summary = course_summary
         self.client = OpenAI(api_key = settings.OPENAI_API_KEY )
-        genai.configure(api_key=settings.GEMINI_API)
-        self.model = genai.GenerativeModel('gemini-pro')
+        # genai.configure(api_key=settings.GEMINI_API)
+        # self.model = genai.GenerativeModel('gemini-pro')
 
 
     def search_youtube_videos_with_keywords_and_channels(self):
@@ -250,7 +250,7 @@ class FetchYoutubeLGU():
 
         prompt = f'Give me a list of 20 youtube creators with their channels names and usernames to learn more about {theme} in {language}. Please return in a list with JSONs with the keys "channel_name" and "username"'
 
-        response = self.model.generate_content(prompt)
+        # response = self.model.generate_content(prompt)
 
         sources = []
 
