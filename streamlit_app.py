@@ -287,7 +287,8 @@ def script_generator():
                 config
             )
 
-            scenes = video.setup_intro_scene()[:2]
+            # scenes = video.setup_intro_scene()[:2]
+            scenes = video.setup_intro_scene()
 
             scenes_df = pd.DataFrame(scenes)
             st.dataframe(scenes_df['narration_text'])
