@@ -9,7 +9,7 @@ from PIL import Image
 import requests
 import time
 from fetch_lgu_service import FetchYoutubeLGU
-from scripts import Video
+from scripts import Video, YoutubeVideo
 from summary import Summary
 from templates import chatgpt_chat_completion_with_prompt, get_image_improvement_english_template, get_image_improvement_template, get_midjourney_template, get_prompt_template_teacher_introduction_talk_show, get_script_template_teacher_introduction_talk_show
 from utils import (fetch_narration_in_memory, generate_avatar_heygen_with_audio_file, get_generated_avatar_heygen, get_imagine_request, 
@@ -20,6 +20,75 @@ from utils import (fetch_narration_in_memory, generate_avatar_heygen_with_audio_
                    generate_image, open_image_from_url)
 
 
+
+voices = {
+        'Danielle': {
+            "avatar_id": "cdd854f69fcc4377b3719fff9e59254c",
+            "name": "Danielle Galvão de Freitas",
+            "voice_id": "PrL0UiloeutOJHWgtnhl",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Paulo':{
+            "avatar_id": "950bacb4323e45e2a64763118d57b6e0",
+            "name": "Paulo Henrique da Silveira",
+            "voice_id": "VjAF4sITielIF4uPhaQq",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Rafaela':{
+            "avatar_id": "d9ca20b2a6414d549661960ca3cac50b",
+            "name": "d9ca20b2a6414d549661960ca3cac50b",
+            "voice_id": "pLPnQTC3hNnSUBB7SMzK",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Fernando':{
+            "avatar_id": "40b3a22fd7644911b109ff29da8c698c",
+            "name": "Fernando Morais Ribeiro",
+            "voice_id": "sxPCqhPEJ2CMdSQmjvu6",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Yanco':{
+            "avatar_id": "e80beb6b91cb40a59a6ed3c4ca370d3f",
+            "name": "Yanco Paternó de Oliveira",
+            "voice_id": "ORPHIL42UCbVvxd8XD6B",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Rangel':{
+            "avatar_id": "33f01da51d8943d19e51d26684502d66",
+            "name": "Rangel Barbosa",
+            "voice_id": "rVYXh5OmQcvchhNYtBWe",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'André':{
+            "avatar_id": "a79fbc0857ed4585885d96b13a89ece0",
+            "name": "André Garcia Barbosa",
+            "voice_id": "MblN0w8JeK5RHsrd41Dw",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Letícia':{
+            "avatar_id": "74bcc45eb3aa4b89b26cccddab875ede",
+            "name": "Letícia de Paula Sacco",
+            "voice_id": "gPsEBQXtNJMgQt80xSV0",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Alexandre':{
+            "avatar_id": "1c6d68f94dbb4be8a41d8f35b83f2852",
+            "name": "Alexandre Naressi",
+            "voice_id": "kRJZKpG96QKcf6B19BzP",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Renata':{
+            "avatar_id": "e2c9701d03994e549dc83653f4819779",
+            "name": "Renata del Bove",
+            "voice_id": "q9UszhvKZ77IjWcD1KP9",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Eduardo':{
+            "avatar_id": "eac1815fdf964f8e9f8dc38bc41e5281",
+            "name": "Eduardo Henrique Leitner",
+            "voice_id": "VoyyBAj0yhhEGxtHYMGv",
+            "model_id": "eleven_multilingual_v2",
+        },
+    }
 
 def check_password():
     """Returns `True` if the user had the correct password."""
@@ -99,19 +168,8 @@ def text_to_image_generator():
 
 def text_to_speech_generator():
     st.write("Text to Speech Generator using ElevenLabs API")
-
-    voices = {
-        'Rachel': {
-            'model_id': 'eleven_monolingual_v1',
-            'voice_id': '21m00Tcm4TlvDq8ikWAM'
-        },
-        'Rangel Barbosa 02':{
-            "voice_id": "rVYXh5OmQcvchhNYtBWe",
-            "model_id": "eleven_multilingual_v2",
-        }
-    }
     
-    selected_voice = st.selectbox("Select a voice:", ['Rangel Barbosa 02', 'Rachel'])
+    selected_voice = st.selectbox("Select a voice:", list(voices.keys()))
     text = st.text_area("Enter text:", """Alcançe seus objetivos na medida""")
     stability = st.slider("Stability:", min_value=0.0, max_value=1.0, value=0.48)
     similarity_boost = st.slider("Similarity Boost:", min_value=0.0, max_value=1.0, value=0.55)
@@ -135,9 +193,10 @@ def text_to_speech_generator():
         )
 
 def text_to_avatar_generator():
+
     st.write("Text to Avatar Generator using Heygen API")
 
-    selected_avatar = st.selectbox("Select a voice:", ['Rangel Barbosa', ])
+    selected_avatar = st.selectbox("Select a voice:", list(voices.keys()))
     # narration = st.text_area("Enter narration:", 'Oi, aqui é o Paulo')
     uploaded_file = st.file_uploader("Upload MP3 file", type=['mp3'])
     test = st.checkbox('Test', value=False)
@@ -151,7 +210,8 @@ def text_to_avatar_generator():
                 audio_url = upload_object_in_memory_to_s3(uploaded_file_io, 'audio/narration.mp3')
 
                 if audio_url:
-                    result = generate_avatar_heygen_with_audio_file(audio_url=audio_url, is_teste=test)
+                    avatar_id = voices[selected_avatar]['avatar_id']
+                    result = generate_avatar_heygen_with_audio_file(audio_url=audio_url, avatar_id=avatar_id, is_teste=test)
             
             # else:
             #     result = send_to_generate_avatar_heygen(narration, test=test)
@@ -175,46 +235,72 @@ def script_generator():
     st.write("Script Generator")
 
     templates = {
-        "Template 1.4.4": "This is the text for template 2.",
-        "Template 1.2.1": "This is the text for template 1.",
+        # "Template 1.4.4": "This is the text for template 2.",
+        # "Template 1.2.1": "This is the text for template 1.",
+        "Template A - Youtube": "Template A - Youtube",
+        "Template B - Youtube": "Template B - Youtube",
+        "Template C - Youtube": "Template C - Youtube",
     }
 
     template = st.selectbox("Select a template", list(templates.keys()))
-    generate_image_assets = st.checkbox('Generate Image Assets', value=False)
+    selected_avatar = st.selectbox("Select a voice:", list(voices.keys()))
+    
+    study_institution = st.text_input('Study Institution:', 'Universidade Federal de São Paulo')
+    course_name = st.text_input('Course Name:', 'Finanças')
+    course_objective = st.text_input('Course Objective:', 'Aprender a analisar crédito para empresas de médio porte')
+    course_topics = st.text_input('Course Topics:', 'Análise de crédito, Risco de crédito, Rating de crédito')
+    past_experience = st.text_input('Past Experience:', 'Empresa X, Y e Z')
+    current_job = st.text_input('Current Job:', 'Analista de Crédito na empresa X')
+    hobbies = st.text_input('Hobbies:', 'Gosto de jogar futebol')
+
     generate_audio_assets = st.checkbox('Generate Audio Assets', value=False)
     generate_avatar_assets = st.checkbox('Generate Avatar Assets', value=False)
+    stability = st.slider("Stability:", min_value=0.0, max_value=1.0, value=0.48)
+    similarity_boost = st.slider("Similarity Boost:", min_value=0.0, max_value=1.0, value=0.55)
+    style = st.slider("Style:", min_value=0.0, max_value=1.0, value=0.0)
 
-    final_course = st.file_uploader('Final Course JSON:', type=['json'])
+    # final_course = st.file_uploader('Final Course JSON:', type=['json'])
 
     if st.button('Generate script'):
         with st.spinner("Loading..."):
 
-            if final_course is None:
-                st.error('Please, upload the final_course json file.')
-                return
+            # if final_course is None:
+            #     st.error('Please, upload the final_course json file.')
+            #     return
                 
-            final_course = json.load(final_course)
+            # final_course = json.load(final_course)
 
-            if final_course.get('course_summary') is None or final_course.get('final_project') is None:
-                st.error('Please, upload a valid final_course JSON file.')
+            # if final_course.get('course_summary') is None or final_course.get('final_project') is None:
+            #     st.error('Please, upload a valid final_course JSON file.')
 
-            video = Video(
-                onboarding = final_course['onboarding'],
-                course_summary = final_course['course_summary'],
+            config = dict(study_institution = study_institution,
+                course_name = course_name,
+                past_experience = past_experience,
+                current_job = current_job,
+                hobbies = hobbies,
+                instructor_name = voices[selected_avatar]['name'],
+                course_objective = course_objective,
+                course_topics = course_topics,
+                template_selected = templates[template],)
+
+            video = YoutubeVideo(
+                config
             )
-            # scenes = video.run()
-            scenes = video.run()[:3]
 
-            if generate_image_assets:
-                scenes = video.generate_image_files(scenes)
+            scenes = video.setup_intro_scene()[:2]
+
+            scenes_df = pd.DataFrame(scenes)
+            st.dataframe(scenes_df['narration_text'])
+
+            # if generate_image_assets:
+            #     scenes = video.generate_image_files(scenes)
             
             if generate_audio_assets:
-                scenes = video.generate_audio_files(scenes)
+                scenes = video.generate_audio_files(scenes, stability=stability, similarity_boost=similarity_boost, style=style, voice_id=voices[selected_avatar]['voice_id'], model_id=voices[selected_avatar]['model_id'])
 
             if generate_avatar_assets:
-                scenes = video.generate_avatar_files(scenes)
+                scenes = video.generate_avatar_files(scenes, avatar_id=voices[selected_avatar]['avatar_id'], is_teste=False)
 
-            # Display the DataFrame
             scenes_df = pd.DataFrame(scenes)
             st.dataframe(scenes_df)
 
@@ -223,7 +309,7 @@ def script_generator():
             st.download_button(
                 label="Download CSV",
                 data=csv,
-                file_name="scenes.csv",
+                file_name=f"{template}_{selected_avatar}.csv",
                 mime="text/csv"
             )
             

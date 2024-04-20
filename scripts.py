@@ -471,3 +471,205 @@ class Video:
             {"role":"system", "content": system_prompt},
         ]
         return self.get_completion(messages, model, temperature)
+
+
+class YoutubeVideo:
+
+    config = dict(
+        student_industry = 'Genérico',
+        professional_area = 'Genérico',
+        student_position = 'Genérico',
+        course_name = 'Genérico',
+    )
+
+    template_selection = {
+        "Template A - Youtube": [
+            {"use_avatar":False, "narration_text": "Curso de {course_name}? Você nunca viu um deste aqui!", "target":"scene_01_intro", "objective": "Introdução"},
+            {"use_avatar":False, "narration_text": "Sabe aquele curso comprido, cheio de teoria e que só repete algum livro que você já leu? Aqui, vai ser tudo diferente.", "target":"scene_02_intro", "objective": "Introdução"},
+            {"use_avatar":False, "narration_text": "O curso vai sair personalizado do seu jeito e de um jeito que você nem imagina!", "target":"scene_03_intro", "objective": "Introdução"},
+            {"use_avatar":True, "narration_text": "Veja até o fim do vídeo e, se gostar, curta a gente, e visite o nosso site, no link abaixo, para maiores informações.", "target":"scene_04_intro", "objective": "Introdução"},
+            {"use_avatar":True, "narration_text": "Sou {instructor_name}, estudei na {study_institution}, passei por várias empresas como {past_experience} e atualmente sou {current_job}.", "target":"scene_01_mentor", "objective": "Mentor"},
+            {"use_avatar":True, "narration_text": "Eu também sou o especialista do curso de {course_name} e o nosso objetivo inicial quando desenhamos esse curso é te capacitar com habilidades e conhecimentos necessários para {course_objective}, abordando competências-chave: ", "target":"scene_02_mentor", "objective": "Mentor"},
+            {"use_avatar":False, "narration_text": "{course_topics}", "target":"scene_03_mentor", "objective": "Mentor"},
+            {"use_avatar":True, "narration_text": "Mas, isso é só plano inicial! Vou deixar para o Rangel, co-fundador da Apoia, te explicar como funciona, pois eu te disse que somos únicos!", "target":"scene_04_mentor", "objective": "Mentor"},
+        ],
+        "Template B - Youtube": [
+            {"use_avatar": False, "narration_text":"Curso grátis de {course_name} com conteúdo que você escolher?","target": "scene_01_intro", "objective": "Introdução"},
+            {"use_avatar": False, "narration_text":"Você já estudou coisas que não eram importantes para você? Quem não?","target": "scene_02_intro", "objective": "Introdução"},
+            {"use_avatar": False, "narration_text":"Mas aqui, você escolhe os capítulos e tem os projetos práticos e ferramentas digitais voltadas para os seus objetivos!","target": "scene_03_intro", "objective": "Introdução"},
+            {"use_avatar": False, "narration_text":"E isso tudo com os grandes especialistas em suas áreas!","target": "scene_04_intro", "objective": "Introdução"},
+            {"use_avatar": True, "narration_text":"Sou {instructor_name}, passei por empresas como {past_experience} e atualmente sou {current_job}.","target": "scene_01_mentor", "objective": "Mentor"},
+            {"use_avatar": False, "narration_text":"Além disso, gosto demais de {hobbies}.","target": "scene_02_mentor", "objective": "Mentor"},
+            {"use_avatar": True, "narration_text":"Se gostar do nosso vídeo, não esqueça de seguir a gente para receber conteúdo gratuito relevante para sua profissão ou interesses pessoais e dar um like no vídeo para nos apoiar.","target": "scene_03_mentor", "objective": "Mentor"},
+            {"use_avatar": False, "narration_text":"Visite o nosso site, no link abaixo, para fazer seu primeiro curso!","target": "scene_04_mentor", "objective": "Mentor"},
+            {"use_avatar": True, "narration_text":"Eu sou um dos especialistas do curso de {course_name} na Apoia e procuramos cobrir os principais tópicos, como: ","target": "scene_01_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"{course_topics}","target": "scene_02_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Mas, isso é só o plano inicial…Agora, vou te explicar como funciona, pois tenho que te mostrar como somos únicos!","target": "scene_03_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Na Apoia, acreditamos em 5 pilares:","target": "scene_04_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Cursos gratuitos. Nossos cursos possuem uma versão gratuita com conteúdo de alta qualidade e é um curso completo.","target": "scene_05_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Importante é a jornada! Pensamos a jornada do seu desenvolvimento pessoal e profissional com cursos online, rápidos e diretos, e não cursos de 80hs","target": "scene_06_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"A vida é real e prática! Desafios são reais e demandam questões práticas para serem resolvidos.","target": "scene_07_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Sozinho não se vai longe! Aqui, temos especialistas para te ajudar a explorar novos caminhos e com certificado ao fim do curso","target": "scene_08_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Tem que ser do seu jeito! Escolher os capítulos do curso? Básico, intermediário ou avançado? Isso, e muito mais, vai deixar seu estudo prazeroso aqui.","target": "scene_09_presentation", "objective": "Apresentação"},
+            {"use_avatar": True, "narration_text":"Não acredita? Explore novas formas de aprender, continue na busca por melhorar sua jornada, e deixe-nos te apoiar nesse caminho! Um grande abraço!","target": "scene_01_conclusion", "objective": "Conclusão"},
+        ],
+        "Template C - Youtube": [
+            {"use_avatar": False, "narration_text":"Curso online grátis de {course_name}","target": "scene_01_intro", "objective": "Introdução"},
+            {"use_avatar": False, "narration_text":"Todos nossos cursos possuem uma versão grátis completa e de alta qualidade!","target": "scene_02_intro", "objective": "Introdução"},
+            {"use_avatar": True, "narration_text":"Além disso, eles possuem especialistas no conhecimento que você está buscando e também são personalizados para entender exatamente o que você busca, com casos práticos, conteúdos específicos e os capítulos que você escolher.","target": "scene_03_intro", "objective": "Introdução"},
+            {"use_avatar": False, "narration_text":"Você nunca viu uma plataforma de cursos assim!","target": "scene_04_intro", "objective": "Introdução"},
+            {"use_avatar": True, "narration_text":"Meu nome é {instructor_name}, atualmente sou {current_job} e especialista aqui na Apoia.","target": "scene_01_mentor", "objective": "Mentor"},
+            {"use_avatar": False, "narration_text":"Na Apoia, acreditamos em 5 pilares:","target": "scene_01_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Cursos gratuitos O cursos possuem uma versão gratuita completa e de alta qualidade.","target": "scene_02_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Cursos online rápidos e diretos, organizados em um jornada para seu sucesso profissional e pessoal","target": "scene_03_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Desafios são reais e demandam questões práticas para serem resolvidos","target": "scene_04_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Especialistas para te ajudar a explorar novos caminhos. Certificado ao fim do curso","target": "scene_05_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"Personalizado, com escolha de capítulos, diferentes níveis (básico, intermediário e avançado) e conteúdo escolhido e produzido apenas para você.","target": "scene_06_presentation", "objective": "Apresentação"},
+            {"use_avatar": True, "narration_text":"Eu sou um dos especialistas do curso de {course_name} na Apoia e nesse curso queremos {course_objective}. E para isso vamos cobrir o seguintes tópicos no curso: ","target": "scene_07_presentation", "objective": "Apresentação"},
+            {"use_avatar": False, "narration_text":"{course_topics}","target": "scene_08_presentation", "objective": "Apresentação"},
+            {"use_avatar": True, "narration_text":"E não esqueça de seguir a gente para receber conteúdo gratuito relevante para sua profissão ou interesses pessoais e dar um like no vídeo para nos apoiar. Visite o nosso site, no link abaixo, para fazer seu primeiro curso!","target": "scene_01_conclusion", "objective": "Conclusão"},
+            {"use_avatar": True, "narration_text":"Explore novas formas de aprender, continue na busca por melhorar sua jornada, e deixe-nos te apoiar nesse caminho! Grande abraço","target": "scene_02_conclusion", "objective": "Conclusão"},
+        ],
+    }
+
+    script_object = {
+        'can_be_random': False,
+        'objective': '',
+        'target': '',
+        'narration_text': '',
+        'narration_audio_url': '',
+        'use_avatar': False,
+        'avatar_video_url': '',
+        'title_a': '',
+        'text_1': '',
+        'text_2': '',
+        'text_3': '',
+        'text_4': '',
+        'images_length': 0,
+        'image_1_url': '',
+        'image_2_url': '',
+        'image_3_url': '',
+        'question_text': '',
+        'answer_1_text': '',
+        'answer_2_text': '',
+        'answer_3_text': '',
+        'answer_4_text': '',
+        'correct_answer_text': '',
+        'correct_answer_number': '',
+        'correct_letter_image_url': '',
+        'narration_answer_text': '',
+        'narration_answer_audio_url': '',
+    }
+
+
+    def __init__(self, onboarding):
+        self.client = OpenAI(api_key = settings.OPENAI_API_KEY )
+        self.config.update(onboarding)
+        self.template = self.template_selection[self.config['template_selected']]
+
+    def run(self):
+        return self.setup_intro_scene()
+
+    def setup_intro_scene(self) -> List[dict]:
+        # INTRODUÇÃO RESUMO CURSO - TEMPLATE
+        scene_intro_overview_list = []
+        for template_dict in self.template:
+            scene_intro_overview = self.script_object.copy()
+            scene_intro_overview['target'] = template_dict['target']
+            scene_intro_overview['objective'] = template_dict['objective']
+            scene_intro_overview['narration_text'] = template_dict['narration_text'].format_map(self.config)
+            scene_intro_overview['use_avatar'] = template_dict['use_avatar']
+            scene_intro_overview_list.append(scene_intro_overview)
+        return scene_intro_overview_list
+
+    def generate_audio_files(self, scenes: List[dict], voice_id="rVYXh5OmQcvchhNYtBWe", model_id="eleven_multilingual_v2", stability=0.48, similarity_boost=0.55, style=0.00) -> List[dict]:
+        print('Generating audio')
+
+        def generate_audio_for_scene(scene):
+            if scene['narration_text']:
+                scene['narration_audio_url'] = self.generate_audio_file_and_upload(scene['narration_text'], voice_id, model_id, stability, similarity_boost, style)
+
+            if scene['narration_answer_text']:
+                scene['narration_answer_audio_url'] = self.generate_audio_file_and_upload(scene['narration_answer_text'], voice_id, model_id, stability, similarity_boost, style)
+
+        with ThreadPoolExecutor() as executor:
+            list(executor.map(generate_audio_for_scene, scenes))
+
+        return scenes
+
+    def generate_audio_file_and_upload(self, narration_text, voice_id="rVYXh5OmQcvchhNYtBWe", model_id="eleven_multilingual_v2", stability=0.48, similarity_boost=0.55, style=0.00):
+
+        audio_data = fetch_narration_in_memory(narration_text, voice_id, stability, similarity_boost, style, model_id)
+        # audio_url = upload_object_in_memory_to_s3(audio_data, f'narration/{voice_id}__{stability}__{similarity_boost}__{style}__{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.mp3')
+        audio_url = upload_object_in_memory_to_s3(audio_data, f'narration/{uuid.uuid4()}.mp3')
+
+        return audio_url
+
+    def generate_avatar_files(self, scenes: List[dict], avatar_id='bd89c0388a9444e49183cb6ec919547d', is_teste=False) -> List[dict]:
+        print('Generating avatares')
+
+        def generate_avatar_for_scene(scene):
+            if scene['use_avatar']:
+                audio_url = scene['narration_audio_url']
+                result = generate_avatar_heygen_with_audio_file(audio_url=audio_url, avatar_id=avatar_id, is_teste=is_teste)
+                video_id = result[1]['data']['video_id']
+                result = get_generated_avatar_heygen(video_id)
+
+                while result[1]['data']['status'] != 'completed':
+                    time.sleep(10)
+                    print(result)
+                    result = get_generated_avatar_heygen(video_id)
+
+                video_url = result[1]['data']['video_url']
+                # video_url = upload_object_in_memory_to_s3(audio_data, f'narration/{uuid.uuid4()}.mp3')
+                print(f"Avatar {scene['target']}: {video_url}")
+                scene['avatar_video_url'] = video_url
+
+        with ThreadPoolExecutor() as executor:
+            list(executor.map(generate_avatar_for_scene, scenes))
+
+        return scenes
+
+    def cot_chapters_narration_and_image_suggestion(self, ) -> List[dict]:
+        with open('prompts/cot_chapters_narration_and_image_suggestion.txt', 'r') as file:
+            message = file.read()
+        message = message.format_map(self.config)
+        result = self.chat_complete(message)
+        return self.parse_json_to_dict(result)['scene']
+
+    def cot_video_texts(self, narration_script) -> List[dict]:
+        with open('prompts/cot_video_texts.txt', 'r') as file:
+            message = file.read()
+        message = message.format(narration_script=narration_script)
+        result = self.chat_complete(message)
+        return self.parse_json_to_dict(result)['narration']
+
+    def cot_quiz_questions(self, ) -> List[dict]:
+        with open('prompts/cot_quiz_questions.txt', 'r') as file:
+            message = file.read()
+        message = message.format_map(self.config)
+        result = self.chat_complete(message)
+        return self.parse_json_to_dict(result)['quiz_list']
+
+    def clean_json_string(self, json_string):
+        pattern = r'^```json\s*(.*?)\s*```$'
+        cleaned_string = re.sub(pattern, r'\1', json_string, flags=re.DOTALL)
+        return cleaned_string.strip()
+
+    def parse_json_to_dict(self, json_string):
+        cleaned_string = self.clean_json_string(json_string)
+        return json.loads(cleaned_string)
+
+    def get_completion(self, messages, model="gpt-3.5-turbo", temperature=0):
+        response = self.client.chat.completions.create(
+            model=model,
+            response_format={ "type": "json_object" },
+            messages=messages
+        )
+        return response.choices[0].message.content
+
+    def chat_complete(self, system_prompt, model="gpt-3.5-turbo", temperature=0) -> str:
+        messages = [
+            {"role":"system", "content": system_prompt},
+        ]
+        return self.get_completion(messages, model, temperature)
