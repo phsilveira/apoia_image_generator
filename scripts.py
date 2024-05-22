@@ -514,21 +514,110 @@ class YoutubeVideo:
             {"use_avatar": True, "narration_text":"Não acredita? Explore novas formas de aprender, continue na busca por melhorar sua jornada, e deixe-nos te apoiar nesse caminho! Um grande abraço!","target": "scene_01_conclusion", "objective": "Conclusão"},
         ],
         "Template C - Youtube": [
-            {"use_avatar": False, "narration_text":"Curso online grátis de {course_name}","target": "scene_01_intro", "objective": "Introdução"},
-            {"use_avatar": False, "narration_text":"Todos nossos cursos possuem uma versão grátis completa e de alta qualidade!","target": "scene_02_intro", "objective": "Introdução"},
-            {"use_avatar": True, "narration_text":"Além disso, eles possuem especialistas no conhecimento que você está buscando e também são personalizados para entender exatamente o que você busca, com casos práticos, conteúdos específicos e os capítulos que você escolher.","target": "scene_03_intro", "objective": "Introdução"},
-            {"use_avatar": False, "narration_text":"Você nunca viu uma plataforma de cursos assim!","target": "scene_04_intro", "objective": "Introdução"},
-            {"use_avatar": True, "narration_text":"Meu nome é {instructor_name}, atualmente sou {current_job} e especialista aqui na Apoia.","target": "scene_01_mentor", "objective": "Mentor"},
-            {"use_avatar": False, "narration_text":"Na Apoia, acreditamos em 5 pilares:","target": "scene_01_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Cursos gratuitos O cursos possuem uma versão gratuita completa e de alta qualidade.","target": "scene_02_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Cursos online rápidos e diretos, organizados em um jornada para seu sucesso profissional e pessoal","target": "scene_03_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Desafios são reais e demandam questões práticas para serem resolvidos","target": "scene_04_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Especialistas para te ajudar a explorar novos caminhos. Certificado ao fim do curso","target": "scene_05_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Personalizado, com escolha de capítulos, diferentes níveis (básico, intermediário e avançado) e conteúdo escolhido e produzido apenas para você.","target": "scene_06_presentation", "objective": "Apresentação"},
-            {"use_avatar": True, "narration_text":"Eu sou um dos especialistas do curso de {course_name} na Apoia e nesse curso queremos {course_objective}. E para isso vamos cobrir o seguintes tópicos no curso: ","target": "scene_07_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"{course_topics}","target": "scene_08_presentation", "objective": "Apresentação"},
-            {"use_avatar": True, "narration_text":"E não esqueça de seguir a gente para receber conteúdo gratuito relevante para sua profissão ou interesses pessoais e dar um like no vídeo para nos apoiar. Visite o nosso site, no link abaixo, para fazer seu primeiro curso!","target": "scene_01_conclusion", "objective": "Conclusão"},
-            {"use_avatar": True, "narration_text":"Explore novas formas de aprender, continue na busca por melhorar sua jornada, e deixe-nos te apoiar nesse caminho! Grande abraço","target": "scene_02_conclusion", "objective": "Conclusão"},
+            {
+                "use_avatar": False,
+                "narration_text":"Curso online grátis de {course_name}",
+                "target": "scene_01_intro", 
+                "objective": "Introdução",
+                "text_1": "{course_name}"
+            },
+            {
+                "use_avatar": False,
+                 "narration_text":"Todos nossos cursos possuem uma versão grátis completa e de alta qualidade!",
+                 "target": "scene_02_intro", 
+                 "objective": "Introdução"
+            },
+            {
+                "use_avatar": True, 
+                "narration_text":"Além disso, eles possuem especialistas no conhecimento que você está buscando e também são personalizados para entender exatamente o que você busca, com casos práticos, conteúdos específicos e os capítulos que você escolher.",
+                "target": "scene_03_intro", 
+                "objective": "Introdução"
+            },
+            {
+                "use_avatar": False,
+                 "narration_text":"Você nunca viu uma plataforma de cursos assim!",
+                 "target": "scene_04_intro", 
+                 "objective": "Introdução"
+            },
+            {
+                "use_avatar": True, 
+                "narration_text":"Meu nome é {instructor_name}, atualmente sou {current_job} e especialista aqui na Apoia.",
+                "target": "scene_05_mentor", 
+                "objective": "Mentor",
+                "text_1": "{instructor_name}",
+                "text_2": "Mentor de {area}"
+            },
+            {
+                "use_avatar": False,
+                 "narration_text":"Na Apoia, acreditamos em 5 pilares:",
+                 "target": "scene_06_pillars", 
+                 "objective": "Apresentação"
+            },
+            {
+                "use_avatar": False,
+                 "narration_text":"Cursos gratuitos os cursos possuem uma versão gratuita completa e de alta qualidade.",
+                 "target": "scene_07_pillars", 
+                 "objective": "Apresentação"
+            },
+            {
+                "use_avatar": False,
+                 "narration_text":"Cursos online rápidos e diretos, organizados em uma jornada para seu sucesso profissional e pessoal",
+                 "target": "scene_08_pillars", 
+                 "objective": "Apresentação"
+            },
+            {
+                "use_avatar": False,
+                 "narration_text":"Quer acompanhar seu progresso? Descubra sua posição e chegue no ranking dos melhores do mercado!",
+                 "target": "scene_09_pillars", 
+                 "objective": "Apresentação"
+            },
+            {
+                "use_avatar": False,
+                 "narration_text":"Especialistas para te ajudar a explorar novos caminhos. Certificado ao fim do curso",
+                 "target": "scene_10_pillars", 
+                 "objective": "Apresentação"
+            },
+            {
+                "use_avatar": False,
+                 "narration_text":"Personalizado, com escolha de capítulos, diferentes níveis (básico, intermediário e avançado) e conteúdo escolhido e produzido apenas para você.",
+                 "target": "scene_11_presentation", 
+                 "objective": "Apresentação"
+            },
+            {
+                "use_avatar": True, 
+                "narration_text":"Eu sou um dos especialistas do curso de {course_name} na Apoia e nesse curso queremos {course_objective}. E para isso vamos cobrir o seguintes tópicos no curso: ",
+                "target": "scene_12_presentation", 
+                "objective": "Apresentação"
+            },
+            {
+                "use_avatar": False,
+                "narration_text":"{course_topics}",
+                "target": "scene_13_topics", 
+                "objective": "Apresentação",
+                "text_1": "{course_name}",
+                "text_2": "{topic01}",
+                "text_3": "{topic02}",
+                "text_4": "{topic03}",
+                "text_5": "{topic04}",
+            },
+            {
+                "use_avatar": True, 
+                "narration_text":"E não esqueça de seguir a gente para receber conteúdo gratuito relevante para sua profissão ou interesses pessoais e dar um like no vídeo para nos apoiar. Visite o nosso site, no link abaixo, para fazer seu primeiro curso!",
+                "target": "scene_14_conclusion", 
+                "objective": "Conclusão",
+                "text_1": "Curso de {course_name}",
+                "text_2": "{youtube_channel_name}",
+            },
+            {
+                "use_avatar": True, 
+                "narration_text":"Explore novas formas de aprender, continue na busca por melhorar sua jornada, e deixe-nos te apoiar nesse caminho! Grande abraço",
+                "target": "scene_15_conclusion", 
+                "objective": "Conclusão"
+            },
+            {
+                "target": "scene_16_brand_signature", 
+                "objective": "Assinatura"
+            },
         ],
     }
 
@@ -577,8 +666,12 @@ class YoutubeVideo:
             scene_intro_overview = self.script_object.copy()
             scene_intro_overview['target'] = template_dict['target']
             scene_intro_overview['objective'] = template_dict['objective']
-            scene_intro_overview['narration_text'] = template_dict['narration_text'].format_map(self.config)
-            scene_intro_overview['use_avatar'] = template_dict['use_avatar']
+            scene_intro_overview['narration_text'] = template_dict.get('narration_text', '').format_map(self.config)
+            scene_intro_overview['text_1'] = template_dict.get('text_1', '').format_map(self.config)
+            scene_intro_overview['text_2'] = template_dict.get('text_2', '').format_map(self.config)
+            scene_intro_overview['text_3'] = template_dict.get('text_3', '').format_map(self.config)
+            scene_intro_overview['text_4'] = template_dict.get('text_4', '').format_map(self.config)
+            scene_intro_overview['use_avatar'] = template_dict.get('use_avatar', '')
             scene_intro_overview_list.append(scene_intro_overview)
         return scene_intro_overview_list
 
@@ -592,8 +685,12 @@ class YoutubeVideo:
             if scene['narration_answer_text']:
                 scene['narration_answer_audio_url'] = self.generate_audio_file_and_upload(scene['narration_answer_text'], voice_id, model_id, stability, similarity_boost, style)
 
-        with ThreadPoolExecutor() as executor:
-            list(executor.map(generate_audio_for_scene, scenes))
+        # with ThreadPoolExecutor() as executor:
+        #     list(executor.map(generate_audio_for_scene, scenes))
+
+        # generating audio files
+        for scene in tqdm(scenes):
+            generate_audio_for_scene(scene)
 
         return scenes
 
@@ -612,6 +709,7 @@ class YoutubeVideo:
             if scene['use_avatar']:
                 audio_url = scene['narration_audio_url']
                 result = generate_avatar_heygen_with_audio_file(audio_url=audio_url, avatar_id=avatar_id, is_teste=is_teste)
+                print(result)
                 video_id = result[1]['data']['video_id']
                 result = get_generated_avatar_heygen(video_id)
 
@@ -625,8 +723,12 @@ class YoutubeVideo:
                 print(f"Avatar {scene['target']}: {video_url}")
                 scene['avatar_video_url'] = video_url
 
-        with ThreadPoolExecutor() as executor:
-            list(executor.map(generate_avatar_for_scene, scenes))
+        # with ThreadPoolExecutor() as executor:
+        #     list(executor.map(generate_avatar_for_scene, scenes))
+
+        # generating avatar files
+        for scene in tqdm(scenes):
+            generate_avatar_for_scene(scene)
 
         return scenes
 

@@ -1,6 +1,7 @@
 import datetime
 import io
 import json
+import uuid
 import pandas as pd
 import streamlit as st
 import openai
@@ -28,8 +29,8 @@ voices = {
             "voice_id": "PrL0UiloeutOJHWgtnhl",
             "model_id": "eleven_multilingual_v2",
         },
-        'Paulo':{
-            "avatar_id": "950bacb4323e45e2a64763118d57b6e0",
+        'Paulo Henrique da Silveira':{
+            "avatar_id": "917201ac4f24427180e20c2c7b43bce5",
             "name": "Paulo Henrique da Silveira",
             "voice_id": "VjAF4sITielIF4uPhaQq",
             "model_id": "eleven_multilingual_v2",
@@ -88,6 +89,18 @@ voices = {
             "voice_id": "VoyyBAj0yhhEGxtHYMGv",
             "model_id": "eleven_multilingual_v2",
         },
+        'Bruno Agostinetto Ferraz': {
+            "avatar_id": "10a9049c5c044f3d850a4f15d5f6f8c0",
+            "name": "Bruno Agostinetto Ferraz",
+            "voice_id": "4mQCVZJlX5XqhyYkFOnI",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Arthur Chavoni': {
+            "avatar_id": "ea8819003c92479eb44ea318e9e80d18",
+            "name": "Arthur Chavoni",
+            "voice_id": "WM6MYeKbzs7NcYwwmuqQ",
+            "model_id": "eleven_multilingual_v2",
+        }
     }
 
 def check_password():
@@ -184,6 +197,11 @@ def text_to_speech_generator():
         audio_data.seek(0)
         st.audio(audio_data.read(), format='audio/mp3')
 
+        audio_url = upload_object_in_memory_to_s3(audio_data, f'narration/{uuid.uuid4()}.mp3')
+
+        if audio_url:
+            st.success(f'Audio generated successfully. at {audio_url}')
+
         audio_data.seek(0)
         st.download_button(
             label="Download audio file",
@@ -248,9 +266,14 @@ def script_generator():
     study_institution = st.text_input('Study Institution:', 'Universidade Federal de São Paulo')
     course_name = st.text_input('Course Name:', 'Finanças')
     course_objective = st.text_input('Course Objective:', 'Aprender a analisar crédito para empresas de médio porte')
-    course_topics = st.text_input('Course Topics:', 'Análise de crédito, Risco de crédito, Rating de crédito')
+    # course_topics = st.text_input('Course Topics:', 'Análise de crédito, Risco de crédito, Rating de crédito')
+    topic01 = st.text_input('Topic 01:', 'Análise de crédito')
+    topic02 = st.text_input('Topic 02:', 'Risco de crédito')
+    topic03 = st.text_input('Topic 03:', 'Rating de crédito')
+    area = st.text_input('Area:', 'Finanças')
     past_experience = st.text_input('Past Experience:', 'Empresa X, Y e Z')
     current_job = st.text_input('Current Job:', 'Analista de Crédito na empresa X')
+    youtube_channel_name = st.text_input('Youtube Channel Name:', 'Canal do Professor')
     hobbies = st.text_input('Hobbies:', 'Gosto de jogar futebol')
 
     generate_audio_assets = st.checkbox('Generate Audio Assets', value=False)
@@ -273,21 +296,28 @@ def script_generator():
             # if final_course.get('course_summary') is None or final_course.get('final_project') is None:
             #     st.error('Please, upload a valid final_course JSON file.')
 
-            config = dict(study_institution = study_institution,
+            config = dict(
+                study_institution = study_institution,
                 course_name = course_name,
                 past_experience = past_experience,
                 current_job = current_job,
                 hobbies = hobbies,
                 instructor_name = voices[selected_avatar]['name'],
                 course_objective = course_objective,
-                course_topics = course_topics,
-                template_selected = templates[template],)
+                course_topics = topic01 + ', ' + topic02 + ', ' + topic03,
+                topic01 = topic01,
+                topic02 = topic02,
+                topic03 = topic03,
+                area = area,
+                youtube_channel_name = youtube_channel_name,
+                template_selected = templates[template],
+            )
 
             video = YoutubeVideo(
                 config
             )
 
-            # scenes = video.setup_intro_scene()[:2]
+            # scenes = video.setup_intro_scene()[:3]
             scenes = video.setup_intro_scene()
 
             scenes_df = pd.DataFrame(scenes)
