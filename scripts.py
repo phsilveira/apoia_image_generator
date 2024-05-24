@@ -555,7 +555,7 @@ class YoutubeVideo:
             },
             {
                 "use_avatar": False,
-                 "narration_text":"Cursos gratuitos os cursos possuem uma versão gratuita completa e de alta qualidade.",
+                 "narration_text":"Cursos gratuitos! Os cursos possuem uma versão gratuita completa e de alta qualidade.",
                  "target": "scene_07_pillars", 
                  "objective": "Apresentação"
             },
@@ -585,13 +585,13 @@ class YoutubeVideo:
             },
             {
                 "use_avatar": True, 
-                "narration_text":"Eu sou um dos especialistas do curso de {course_name} na Apoia e nesse curso queremos {course_objective}. E para isso vamos cobrir o seguintes tópicos no curso: ",
+                "narration_text":"Eu sou um dos especialistas do curso de {course_name} na Apoia e nesse curso queremos {course_objective}. E para isso vamos cobrir o seguintes tópicos no curso:",
                 "target": "scene_12_presentation", 
                 "objective": "Apresentação"
             },
             {
                 "use_avatar": False,
-                "narration_text":"{course_topics}",
+                "narration_text":"{topic01} ... {topic02} ... e também {topic03}.",
                 "target": "scene_13_topics", 
                 "objective": "Apresentação",
                 "text_1": "{course_name}",

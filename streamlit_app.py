@@ -47,14 +47,14 @@ voices = {
             "voice_id": "sxPCqhPEJ2CMdSQmjvu6",
             "model_id": "eleven_multilingual_v2",
         },
-        'Yanco':{
+        'Yanco Paternó':{
             "avatar_id": "e80beb6b91cb40a59a6ed3c4ca370d3f",
-            "name": "Yanco Paternó de Oliveira",
+            "name": "Yanco Paternó",
             "voice_id": "ORPHIL42UCbVvxd8XD6B",
             "model_id": "eleven_multilingual_v2",
         },
         'Rangel':{
-            "avatar_id": "33f01da51d8943d19e51d26684502d66",
+            "avatar_id": "bd89c0388a9444e49183cb6ec919547d",
             "name": "Rangel Barbosa",
             "voice_id": "rVYXh5OmQcvchhNYtBWe",
             "model_id": "eleven_multilingual_v2",
@@ -89,9 +89,9 @@ voices = {
             "voice_id": "VoyyBAj0yhhEGxtHYMGv",
             "model_id": "eleven_multilingual_v2",
         },
-        'Bruno Agostinetto Ferraz': {
+        'Bruno Ferraz': {
             "avatar_id": "10a9049c5c044f3d850a4f15d5f6f8c0",
-            "name": "Bruno Agostinetto Ferraz",
+            "name": "Bruno Ferraz",
             "voice_id": "4mQCVZJlX5XqhyYkFOnI",
             "model_id": "eleven_multilingual_v2",
         },
@@ -100,7 +100,31 @@ voices = {
             "name": "Arthur Chavoni",
             "voice_id": "WM6MYeKbzs7NcYwwmuqQ",
             "model_id": "eleven_multilingual_v2",
-        }
+        },
+        'Alessandro Nasser': {
+            "avatar_id": "57e128f8987144f8bcf2c3a30989a647",
+            "name": "Alessandro Nasser",
+            "voice_id": "h3wMxGszaOQ9hiRKOqQZ",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Claudia Muniz': {
+            "avatar_id": "cb870716aa5a429e8c7b9971150ee5ca",
+            "name": "Claudia Muniz",
+            "voice_id": "VCCSalUJGlrbOJYYiuND",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Franci Alves': {
+            "avatar_id": "8d1442137a41486780502d1ce23f52f3",
+            "name": "Franci Alves",
+            "voice_id": "5891FIbvQ4j2FoQgrKoS",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Maron Guimarães': {
+            "avatar_id": "7aaff774dbdd4fdbb6f61eb252c6981b",
+            "name": "Maron Guimarães",
+            "voice_id": "DLJ8Zf9uhuGda879eSW0",
+            "model_id": "eleven_multilingual_v2",
+        },
     }
 
 def check_password():
@@ -260,21 +284,24 @@ def script_generator():
         "Template C - Youtube": "Template C - Youtube",
     }
 
+    # template c
+    # course_name, instructor_name, current_job, area, course_objective, youtube_channel_name, topic01, topic02, topic03
+
     template = st.selectbox("Select a template", list(templates.keys()))
     selected_avatar = st.selectbox("Select a voice:", list(voices.keys()))
     
-    study_institution = st.text_input('Study Institution:', 'Universidade Federal de São Paulo')
-    course_name = st.text_input('Course Name:', 'Finanças')
-    course_objective = st.text_input('Course Objective:', 'Aprender a analisar crédito para empresas de médio porte')
+    study_institution = st.text_input('Study Institution:', placeholder='Universidade Federal de São Paulo')
+    course_name = st.text_input('Course Name:', placeholder='Finanças')
+    course_objective = st.text_input('Course Objective:', placeholder='Aprender a analisar crédito para empresas de médio porte')
     # course_topics = st.text_input('Course Topics:', 'Análise de crédito, Risco de crédito, Rating de crédito')
-    topic01 = st.text_input('Topic 01:', 'Análise de crédito')
-    topic02 = st.text_input('Topic 02:', 'Risco de crédito')
-    topic03 = st.text_input('Topic 03:', 'Rating de crédito')
-    area = st.text_input('Area:', 'Finanças')
+    topic01 = st.text_input('Topic 01:', placeholder='Análise de crédito', max_chars=40)
+    topic02 = st.text_input('Topic 02:', placeholder='Risco de crédito', max_chars=40)
+    topic03 = st.text_input('Topic 03:', placeholder='Rating de crédito', max_chars=40)
+    area = st.text_input('Area:', placeholder='Finanças')
     past_experience = st.text_input('Past Experience:', 'Empresa X, Y e Z')
-    current_job = st.text_input('Current Job:', 'Analista de Crédito na empresa X')
-    youtube_channel_name = st.text_input('Youtube Channel Name:', 'Canal do Professor')
-    hobbies = st.text_input('Hobbies:', 'Gosto de jogar futebol')
+    current_job = st.text_input('Current Job:', placeholder='Analista de Crédito na empresa X')
+    youtube_channel_name = st.text_input('Youtube Channel Name:', placeholder='Apoia.Tecnologia')
+    hobbies = st.text_input('Hobbies:', placeholder='Gosto de jogar futebol')
 
     generate_audio_assets = st.checkbox('Generate Audio Assets', value=False)
     generate_avatar_assets = st.checkbox('Generate Avatar Assets', value=False)
