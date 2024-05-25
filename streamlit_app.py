@@ -54,7 +54,7 @@ voices = {
             "model_id": "eleven_multilingual_v2",
         },
         'Rangel':{
-            "avatar_id": "bd89c0388a9444e49183cb6ec919547d",
+            "avatar_id": "4b4db6311cfe4c3b9b840267cfca6952",
             "name": "Rangel Barbosa",
             "voice_id": "rVYXh5OmQcvchhNYtBWe",
             "model_id": "eleven_multilingual_v2",
