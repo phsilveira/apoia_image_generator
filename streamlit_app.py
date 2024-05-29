@@ -10,7 +10,7 @@ from PIL import Image
 import requests
 import time
 from fetch_lgu_service import FetchYoutubeLGU
-from scripts import Video, YoutubeVideo
+from scripts import Template, Video, YoutubeVideo
 from summary import Summary
 from templates import chatgpt_chat_completion_with_prompt, get_image_improvement_english_template, get_image_improvement_template, get_midjourney_template, get_prompt_template_teacher_introduction_talk_show, get_script_template_teacher_introduction_talk_show
 from utils import (fetch_narration_in_memory, generate_avatar_heygen_with_audio_file, get_generated_avatar_heygen, get_imagine_request, 
@@ -23,9 +23,9 @@ from utils import (fetch_narration_in_memory, generate_avatar_heygen_with_audio_
 
 
 voices = {
-        'Danielle': {
-            "avatar_id": "cdd854f69fcc4377b3719fff9e59254c",
-            "name": "Danielle Galvão de Freitas",
+        'Danielle Galvão': {
+            "avatar_id": "dd452996e8a744c7a5ba127a0722c496",
+            "name": "Danielle Galvão",
             "voice_id": "PrL0UiloeutOJHWgtnhl",
             "model_id": "eleven_multilingual_v2",
         },
@@ -125,7 +125,36 @@ voices = {
             "voice_id": "DLJ8Zf9uhuGda879eSW0",
             "model_id": "eleven_multilingual_v2",
         },
+        'Larissa Rocha': {
+            "avatar_id": "5ddaba7b54c74f58a99f6dd616a71360",
+            "name": "Larissa Rocha",
+            "voice_id": "5YIXaBwifD2DVWpWwDag",
+            "model_id": "eleven_multilingual_v2",
+        },
+        'Renan Rêgo': {
+            "avatar_id": "8d505dc14b854536a3808281e1b9e130",
+            "name": "Renan Rêgo",
+            "voice_id": "3DwN6eXCaKk14UXdHnGH",
+            "model_id": "eleven_multilingual_v2",
+        },
     }
+
+youtube_channel_options = [
+    "Apoia.Marketing.Digital",
+    "Apoia.Recursos Humanos",
+    "Apoia.Gestão e Administração",
+    "Apoia.Finanças",
+    "Apoia.Psicologia",
+    "Apoia.Marketing",
+    "Apoia.Vendas",
+    "Apoia.Contabilidade",
+    "Apoia.Educação Infantil",
+    "Apoia.Educacao",
+    "Apoia.DireitoCivil",
+    "Apoia.Produto.e.Product Design",
+    "Apoia.Design",
+    "Apoia.Tecnologia",
+]
 
 def check_password():
     """Returns `True` if the user had the correct password."""
@@ -210,7 +239,7 @@ def text_to_speech_generator():
     text = st.text_area("Enter text:", """Alcançe seus objetivos na medida""")
     stability = st.slider("Stability:", min_value=0.0, max_value=1.0, value=0.48)
     similarity_boost = st.slider("Similarity Boost:", min_value=0.0, max_value=1.0, value=0.55)
-    style = st.slider("Style:", min_value=0.0, max_value=1.0, value=0.06)
+    style = st.slider("Style:", min_value=0.0, max_value=1.0, value=0.00)
 
     if st.button('Generate Speech'):
         voice_id = voices[selected_voice]['voice_id']
@@ -284,24 +313,49 @@ def script_generator():
         "Template C - Youtube": "Template C - Youtube",
     }
 
-    # template c
-    # course_name, instructor_name, current_job, area, course_objective, youtube_channel_name, topic01, topic02, topic03
-
     template = st.selectbox("Select a template", list(templates.keys()))
     selected_avatar = st.selectbox("Select a voice:", list(voices.keys()))
-    
-    study_institution = st.text_input('Study Institution:', placeholder='Universidade Federal de São Paulo')
-    course_name = st.text_input('Course Name:', placeholder='Finanças')
-    course_objective = st.text_input('Course Objective:', placeholder='Aprender a analisar crédito para empresas de médio porte')
-    # course_topics = st.text_input('Course Topics:', 'Análise de crédito, Risco de crédito, Rating de crédito')
+
+    # vars = {
+    #     "study_institution": lambda: st.text_input('Study Institution:', placeholder='estudei na ...'),
+    #     "course_name": lambda: st.text_input('Course Name:', placeholder='curso de ... *sem palavra "curso", ex: Negócios'),
+    #     "course_objective": lambda: st.text_input('Course Objective:', placeholder='conhecimentos necessários para ...'),
+    #     "topic01": lambda: st.text_input('Topic 01:', placeholder='Análise de crédito', max_chars=40),
+    #     "topic02": lambda: st.text_input('Topic 02:', placeholder='Risco de crédito', max_chars=40),
+    #     "topic03": lambda: st.text_input('Topic 03:', placeholder='Rating de crédito', max_chars=40),
+    #     "topic04": lambda: st.text_input('Topic 04:', placeholder='Gestão de risco', max_chars=40),
+    #     "area": lambda: st.text_input('Area:', placeholder='Finanças'),
+    #     "past_experience": lambda: st.text_input('Past Experience:', placeholder='passei por várias empresas como ...'),
+    #     "current_job": lambda: st.text_input('Current Job:', placeholder='atualmente sou ...'),
+    #     "youtube_channel_name": lambda: st.text_input('Youtube Channel Name:', placeholder='Apoia.Tecnologia'),
+    #     "hobbies": lambda: st.text_input('Hobbies:', placeholder='gosto demais de ...'),
+    #     "hobby_image_url_1": lambda: st.text_input('Hobby Image URL 1:', placeholder='https://...'),
+    #     "hobby_image_url_2": lambda: st.text_input('Hobby Image URL 2:', placeholder='https://...'),
+    #     "hobby_image_url_3": lambda: st.text_input('Hobby Image URL 3:', placeholder='https://...'),
+    # }
+
+    study_institution = st.text_input('Study Institution:', placeholder='estudei na ...')
+    course_name = st.text_input('Course Name:', placeholder='curso de ... *sem palavra "curso", ex: Negócios')
+    course_objective = st.text_input('Course Objective:', placeholder='conhecimentos necessários para ...')
     topic01 = st.text_input('Topic 01:', placeholder='Análise de crédito', max_chars=40)
     topic02 = st.text_input('Topic 02:', placeholder='Risco de crédito', max_chars=40)
     topic03 = st.text_input('Topic 03:', placeholder='Rating de crédito', max_chars=40)
+    topic04 = st.text_input('Topic 04:', placeholder='Gestão de risco', max_chars=40)
     area = st.text_input('Area:', placeholder='Finanças')
-    past_experience = st.text_input('Past Experience:', 'Empresa X, Y e Z')
-    current_job = st.text_input('Current Job:', placeholder='Analista de Crédito na empresa X')
-    youtube_channel_name = st.text_input('Youtube Channel Name:', placeholder='Apoia.Tecnologia')
-    hobbies = st.text_input('Hobbies:', placeholder='Gosto de jogar futebol')
+    past_experience = st.text_input('Past Experience:', placeholder='passei por várias empresas como ... e ... (passar duas empresas)')
+    current_job = st.text_input('Current Job:', placeholder='atualmente sou ...')
+    youtube_channel_name = st.selectbox('Youtube Channel Name:', options=youtube_channel_options)
+    hobbies = st.text_input('Hobbies:', placeholder='gosto demais de ... e ... (passar dois hobbies)')
+    hobby_image_url_1 = st.text_input('Hobby Image URL 1:', placeholder='https://...')
+    hobby_image_url_2 = st.text_input('Hobby Image URL 2:', placeholder='https://...')
+    hobby_image_url_3 = st.text_input('Hobby Image URL 3:', placeholder='https://...')
+    instructor_image_url = st.text_input('Instructor Image URL:', placeholder='https://...')
+
+    selected_template = Template().template_selection[template]
+    # selected_variables = selected_template['vars']
+    
+    # for var in selected_variables:
+    #     vars[var]()
 
     generate_audio_assets = st.checkbox('Generate Audio Assets', value=False)
     generate_avatar_assets = st.checkbox('Generate Avatar Assets', value=False)
@@ -314,31 +368,29 @@ def script_generator():
     if st.button('Generate script'):
         with st.spinner("Loading..."):
 
-            # if final_course is None:
-            #     st.error('Please, upload the final_course json file.')
-            #     return
-                
-            # final_course = json.load(final_course)
-
-            # if final_course.get('course_summary') is None or final_course.get('final_project') is None:
-            #     st.error('Please, upload a valid final_course JSON file.')
-
             config = dict(
                 study_institution = study_institution,
                 course_name = course_name,
-                past_experience = past_experience,
-                current_job = current_job,
-                hobbies = hobbies,
-                instructor_name = voices[selected_avatar]['name'],
                 course_objective = course_objective,
-                course_topics = topic01 + ', ' + topic02 + ', ' + topic03,
                 topic01 = topic01,
                 topic02 = topic02,
                 topic03 = topic03,
+                topic04 = topic04,
                 area = area,
+                past_experience = past_experience,
+                current_job = current_job,
                 youtube_channel_name = youtube_channel_name,
-                template_selected = templates[template],
+                hobbies = hobbies,
+                hobby_image_url_1 = hobby_image_url_1,
+                hobby_image_url_2 = hobby_image_url_2,
+                hobby_image_url_3 = hobby_image_url_3,
+                instructor_image_url = instructor_image_url,
+                
+                instructor_name = voices[selected_avatar]['name'],
+                template_selected = selected_template['script'],
             )
+
+            # print(vars["study_institution"].__str__(), )
 
             video = YoutubeVideo(
                 config
@@ -490,8 +542,8 @@ def main():
         text_to_avatar_generator()
     elif selection == "Script Generator":
         script_generator()
-    elif selection == "Course Generator":
-        course_generator()
+    # elif selection == "Course Generator":
+    #     course_generator()
 
     # st.sidebar.header('Settings')
     # st.session_state["model_option"] = st.sidebar.selectbox('LLM Model', ['gpt-3.5-turbo', 'gpt-4',])

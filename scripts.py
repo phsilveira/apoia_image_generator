@@ -472,48 +472,175 @@ class Video:
         ]
         return self.get_completion(messages, model, temperature)
 
-
-class YoutubeVideo:
-
-    config = dict(
-        student_industry = 'Genérico',
-        professional_area = 'Genérico',
-        student_position = 'Genérico',
-        course_name = 'Genérico',
-    )
+class Template:
 
     template_selection = {
-        "Template A - Youtube": [
-            {"use_avatar":False, "narration_text": "Curso de {course_name}? Você nunca viu um deste aqui!", "target":"scene_01_intro", "objective": "Introdução"},
-            {"use_avatar":False, "narration_text": "Sabe aquele curso comprido, cheio de teoria e que só repete algum livro que você já leu? Aqui, vai ser tudo diferente.", "target":"scene_02_intro", "objective": "Introdução"},
-            {"use_avatar":False, "narration_text": "O curso vai sair personalizado do seu jeito e de um jeito que você nem imagina!", "target":"scene_03_intro", "objective": "Introdução"},
-            {"use_avatar":True, "narration_text": "Veja até o fim do vídeo e, se gostar, curta a gente, e visite o nosso site, no link abaixo, para maiores informações.", "target":"scene_04_intro", "objective": "Introdução"},
-            {"use_avatar":True, "narration_text": "Sou {instructor_name}, estudei na {study_institution}, passei por várias empresas como {past_experience} e atualmente sou {current_job}.", "target":"scene_01_mentor", "objective": "Mentor"},
-            {"use_avatar":True, "narration_text": "Eu também sou o especialista do curso de {course_name} e o nosso objetivo inicial quando desenhamos esse curso é te capacitar com habilidades e conhecimentos necessários para {course_objective}, abordando competências-chave: ", "target":"scene_02_mentor", "objective": "Mentor"},
-            {"use_avatar":False, "narration_text": "{course_topics}", "target":"scene_03_mentor", "objective": "Mentor"},
-            {"use_avatar":True, "narration_text": "Mas, isso é só plano inicial! Vou deixar para o Rangel, co-fundador da Apoia, te explicar como funciona, pois eu te disse que somos únicos!", "target":"scene_04_mentor", "objective": "Mentor"},
-        ],
-        "Template B - Youtube": [
-            {"use_avatar": False, "narration_text":"Curso grátis de {course_name} com conteúdo que você escolher?","target": "scene_01_intro", "objective": "Introdução"},
-            {"use_avatar": False, "narration_text":"Você já estudou coisas que não eram importantes para você? Quem não?","target": "scene_02_intro", "objective": "Introdução"},
-            {"use_avatar": False, "narration_text":"Mas aqui, você escolhe os capítulos e tem os projetos práticos e ferramentas digitais voltadas para os seus objetivos!","target": "scene_03_intro", "objective": "Introdução"},
-            {"use_avatar": False, "narration_text":"E isso tudo com os grandes especialistas em suas áreas!","target": "scene_04_intro", "objective": "Introdução"},
-            {"use_avatar": True, "narration_text":"Sou {instructor_name}, passei por empresas como {past_experience} e atualmente sou {current_job}.","target": "scene_01_mentor", "objective": "Mentor"},
-            {"use_avatar": False, "narration_text":"Além disso, gosto demais de {hobbies}.","target": "scene_02_mentor", "objective": "Mentor"},
-            {"use_avatar": True, "narration_text":"Se gostar do nosso vídeo, não esqueça de seguir a gente para receber conteúdo gratuito relevante para sua profissão ou interesses pessoais e dar um like no vídeo para nos apoiar.","target": "scene_03_mentor", "objective": "Mentor"},
-            {"use_avatar": False, "narration_text":"Visite o nosso site, no link abaixo, para fazer seu primeiro curso!","target": "scene_04_mentor", "objective": "Mentor"},
-            {"use_avatar": True, "narration_text":"Eu sou um dos especialistas do curso de {course_name} na Apoia e procuramos cobrir os principais tópicos, como: ","target": "scene_01_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"{course_topics}","target": "scene_02_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Mas, isso é só o plano inicial…Agora, vou te explicar como funciona, pois tenho que te mostrar como somos únicos!","target": "scene_03_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Na Apoia, acreditamos em 5 pilares:","target": "scene_04_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Cursos gratuitos. Nossos cursos possuem uma versão gratuita com conteúdo de alta qualidade e é um curso completo.","target": "scene_05_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Importante é a jornada! Pensamos a jornada do seu desenvolvimento pessoal e profissional com cursos online, rápidos e diretos, e não cursos de 80hs","target": "scene_06_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"A vida é real e prática! Desafios são reais e demandam questões práticas para serem resolvidos.","target": "scene_07_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Sozinho não se vai longe! Aqui, temos especialistas para te ajudar a explorar novos caminhos e com certificado ao fim do curso","target": "scene_08_presentation", "objective": "Apresentação"},
-            {"use_avatar": False, "narration_text":"Tem que ser do seu jeito! Escolher os capítulos do curso? Básico, intermediário ou avançado? Isso, e muito mais, vai deixar seu estudo prazeroso aqui.","target": "scene_09_presentation", "objective": "Apresentação"},
-            {"use_avatar": True, "narration_text":"Não acredita? Explore novas formas de aprender, continue na busca por melhorar sua jornada, e deixe-nos te apoiar nesse caminho! Um grande abraço!","target": "scene_01_conclusion", "objective": "Conclusão"},
-        ],
-        "Template C - Youtube": [
+        "Template A - Youtube":{ 
+            "vars": ["course_name", "study_institution", "past_experience", "current_job", "course_objective", "topic01", "topic02", "topic03",],
+            "script": [
+                {"use_avatar":False, "narration_text": "Curso de {course_name}? Você nunca viu um deste aqui!", "target":"scene_01_intro", "objective": "Introdução"},
+                {"use_avatar":False, "narration_text": "Sabe aquele curso comprido, cheio de teoria e que só repete algum livro que você já leu? Aqui, vai ser tudo diferente.", "target":"scene_02_intro", "objective": "Introdução"},
+                {"use_avatar":False, "narration_text": "O curso vai sair personalizado do seu jeito e de um jeito que você nem imagina!", "target":"scene_03_intro", "objective": "Introdução"},
+                {"use_avatar":True, "narration_text": "Veja até o fim do vídeo e, se gostar, curta a gente, e visite o nosso site, no link abaixo, para maiores informações.", "target":"scene_04_intro", "objective": "Introdução"},
+                {"use_avatar":True, "narration_text": "Sou {instructor_name}, estudei na {study_institution}, passei por várias empresas como {past_experience} e atualmente sou {current_job}.", "target":"scene_01_mentor", "objective": "Mentor"},
+                {"use_avatar":True, "narration_text": "Eu também sou o especialista do curso de {course_name} e o nosso objetivo inicial quando desenhamos esse curso é te capacitar com habilidades e conhecimentos necessários para {course_objective}, abordando competências-chave: ", "target":"scene_02_mentor", "objective": "Mentor"},
+                {"use_avatar":False, "narration_text": "{topic01} ...{topic02}... e também {topic03}", "target":"scene_03_mentor", "objective": "Mentor"},
+                {"use_avatar":True, "narration_text": "Mas, isso é só plano inicial! Vou deixar para o Rangel, co-fundador da Apoia, te explicar como funciona, pois eu te disse que somos únicos!", "target":"scene_04_mentor", "objective": "Mentor"},
+            ]
+        },
+        "Template B - Youtube": {
+            "vars": ["course_name", "past_experience", "current_job", "hobbies", "hobby_image_url_3", "hobby_image_url_1", "hobby_image_url_2", "topic01", "topic02", "topic03", "topic04", "instructor_image_url"],
+            "script":[
+                {
+                    'can_be_random': False,
+                    'objective': 'Introdução',
+                    'target': 'scene_01_intro',
+                    'narration_text': 'Curso grátis de {course_name} com conteúdo que VOCÊ escolher?',
+                    'use_avatar': False,
+                    'title_a': '{course_name} • {course_name} • {course_name} • {course_name}',
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Introdução',
+                    'target': 'scene_02_intro',
+                    'narration_text': 'Você já estudou coisas que não eram importantes para você? Quem NÃO?',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Introdução',
+                    'target': 'scene_03_intro',
+                    'narration_text': 'Mas AQUI, você escolhe os capítulos e tem os projetos práticos e ferramentas digitais voltadas para os SEUS objetivos!',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Introdução',
+                    'target': 'scene_04_intro',
+                    'narration_text': 'E isso tudo com os GRANDES especialistas em suas áreas!',
+                    'use_avatar': False,
+                    'images_length': 1,
+                    'image_1_url': '{instructor_image_url}',
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Mentor',
+                    'target': 'scene_01_mentor',
+                    'narration_text': 'Sou {instructor_name}, passei por empresas como {past_experience} e atualmente sou {current_job}.',
+                    'use_avatar': True,
+                    'title_a': '{instructor_name}',
+                    'text_1': ' {current_job}',
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Mentor',
+                    'target': 'scene_02_mentor',
+                    'narration_text': 'Além disso, gosto DEMAIS de {hobbies}.',
+                    'use_avatar': False,
+                    'images_length': 3,
+                    'image_1_url': '{hobby_image_url_3}',
+                    'image_2_url': '{hobby_image_url_1}',
+                    'image_3_url': '{hobby_image_url_2}'
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Mentor',
+                    'target': 'scene_03_mentor',
+                    'narration_text': 'Se gostar do nosso vídeo, não esqueça de seguir a gente para receber conteúdo gratuito relevante para sua profissão ou interesses pessoais e dar um like no vídeo para nos apoiar.',
+                    'use_avatar': True,
+                    'title_a': 'Curso de {course_name}',
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Mentor',
+                    'target': 'scene_04_mentor',
+                    'narration_text': 'Visite o nosso site, no link abaixo, para fazer seu PRIMEIRO curso!',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_01_presentation',
+                    'narration_text': 'Eu sou um dos especialistas do curso de {course_name} na Apoia e procuramos cobrir os PRINCIPAIS tópicos, como:',
+                    'use_avatar': True,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_02_presentation',
+                    'narration_text': '{topic01} ... {topic02} ... {topic03} ... e também {topic04}.',
+                    'use_avatar': False,
+                    'title_a': '{topic01}',
+                    'text_1': '{topic02}',
+                    'text_2': '{topic03}',
+                    'text_3': '{topic04}',
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_03_presentation',
+                    'narration_text': 'Mas, isso é só o plano inicial… Agora, vou te explicar como funciona, pois tenho que te mostrar como somos únicos!',
+                    'use_avatar': True,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_04_presentation',
+                    'narration_text': 'Na Apoia, acreditamos em 5 pilares:',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_05_presentation',
+                    'narration_text': 'Cursos GRATUITOS. Nossos cursos possuem uma versão gratuita com conteúdo de alta qualidade e é um curso completo.',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_06_presentation',
+                    'narration_text': 'Importante é a JORNADA! Pensamos a jornada do seu desenvolvimento pessoal e profissional com cursos online, rápidos e diretos, e não cursos de 80 horas',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_07_presentation',
+                    'narration_text': 'Quer acompanhar seu PROGRESSO? Descubra sua posição e chegue no ranking dos melhores do mercado!',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_08_presentation',
+                    'narration_text': 'Sozinho não se vai LONGE! Aqui, temos especialistas para te ajudar a explorar novos caminhos e com certificado ao fim do curso',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Apresentação',
+                    'target': 'scene_09_presentation',
+                    'narration_text': 'Tem que ser do SEU JEITO! Escolher os capítulos do curso? Básico, intermediário ou avançado? Isso, e muito mais, vai deixar seu estudo prazeroso aqui.',
+                    'use_avatar': False,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Conclusão',
+                    'target': 'scene_01_conclusion',
+                    'narration_text': 'Não ACREDITA? Explore novas formas de aprender, continue na busca por melhorar sua jornada, e deixe-nos te apoiar nesse caminho! Um grande abraço!',
+                    'use_avatar': True,
+                },
+                {
+                    'can_be_random': False,
+                    'objective': 'Assinatura',
+                    'target': 'scene_brand_signature',
+                }
+            ]
+        },
+        "Template C - Youtube": {
+            "vars": ["course_name", "current_job", "area", "topic01", "topic02", "topic03", "topic04", "youtube_channel_name"],
+            "script": [
             {
                 "use_avatar": False,
                 "narration_text":"Curso online grátis de {course_name}",
@@ -545,7 +672,7 @@ class YoutubeVideo:
                 "target": "scene_05_mentor", 
                 "objective": "Mentor",
                 "text_1": "{instructor_name}",
-                "text_2": "Mentor de {area}"
+                "text_2": "Especialista de {area}"
             },
             {
                 "use_avatar": False,
@@ -618,8 +745,20 @@ class YoutubeVideo:
                 "target": "scene_16_brand_signature", 
                 "objective": "Assinatura"
             },
-        ],
+        ]},
     }
+
+
+
+
+class YoutubeVideo:
+
+    config = dict(
+        student_industry = 'Genérico',
+        professional_area = 'Genérico',
+        student_position = 'Genérico',
+        course_name = 'Genérico',
+    )
 
     script_object = {
         'can_be_random': False,
@@ -650,11 +789,10 @@ class YoutubeVideo:
         'narration_answer_audio_url': '',
     }
 
-
     def __init__(self, onboarding):
         self.client = OpenAI(api_key = settings.OPENAI_API_KEY )
         self.config.update(onboarding)
-        self.template = self.template_selection[self.config['template_selected']]
+        self.template = self.config['template_selected']
 
     def run(self):
         return self.setup_intro_scene()
@@ -671,6 +809,11 @@ class YoutubeVideo:
             scene_intro_overview['text_2'] = template_dict.get('text_2', '').format_map(self.config)
             scene_intro_overview['text_3'] = template_dict.get('text_3', '').format_map(self.config)
             scene_intro_overview['text_4'] = template_dict.get('text_4', '').format_map(self.config)
+            scene_intro_overview['images_length'] = template_dict.get('images_length', 0)
+            scene_intro_overview['image_1_url'] = template_dict.get('image_1_url', '').format_map(self.config)
+            scene_intro_overview['image_2_url'] = template_dict.get('image_2_url', '').format_map(self.config)
+            scene_intro_overview['image_3_url'] = template_dict.get('image_3_url', '').format_map(self.config)
+            scene_intro_overview['title_a'] = template_dict.get('title_a', '').format_map(self.config)
             scene_intro_overview['use_avatar'] = template_dict.get('use_avatar', '')
             scene_intro_overview_list.append(scene_intro_overview)
         return scene_intro_overview_list
