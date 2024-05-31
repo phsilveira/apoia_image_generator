@@ -31,7 +31,7 @@ def generate_image(image_sugestion: str, aspect_ratio: str = "16:9", process_mod
 
     image_url = fetch_response['task_result']['image_url']
     task_id = response['task_id']
-    file_name =  f'{task_id}.png'
+    file_name =  f'{task_id}.jpg'
     downloaded_image = download_image_in_memory(image_url)
     if downloaded_image:
         cropped_images = crop_quadrants_in_memory(downloaded_image)

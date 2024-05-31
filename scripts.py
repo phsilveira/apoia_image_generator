@@ -833,9 +833,13 @@ class YoutubeVideo:
 
         # generating audio files
         for scene in tqdm(scenes):
-            generate_audio_for_scene(scene)
+            try:
+                generate_audio_for_scene(scene)
+            except Exception as e:
+                print(f"Error: {e}")
+                return scenes, False
 
-        return scenes
+        return scenes, True
 
     def generate_audio_file_and_upload(self, narration_text, voice_id="rVYXh5OmQcvchhNYtBWe", model_id="eleven_multilingual_v2", stability=0.48, similarity_boost=0.55, style=0.00):
 
@@ -871,9 +875,13 @@ class YoutubeVideo:
 
         # generating avatar files
         for scene in tqdm(scenes):
-            generate_avatar_for_scene(scene)
+            try:
+                generate_avatar_for_scene(scene)
+            except Exception as e:
+                print(f"Error: {e}")
+                return scenes, False
 
-        return scenes
+        return scenes, True
 
     def cot_chapters_narration_and_image_suggestion(self, ) -> List[dict]:
         with open('prompts/cot_chapters_narration_and_image_suggestion.txt', 'r') as file:

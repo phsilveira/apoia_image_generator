@@ -41,9 +41,9 @@ voices = {
             "voice_id": "pLPnQTC3hNnSUBB7SMzK",
             "model_id": "eleven_multilingual_v2",
         },
-        'Fernando':{
-            "avatar_id": "40b3a22fd7644911b109ff29da8c698c",
-            "name": "Fernando Morais Ribeiro",
+        'Fernando Ribeiro':{
+            "avatar_id": "56a1eba78ab641439ad533cf2a02c188",
+            "name": "Fernando Ribeiro",
             "voice_id": "sxPCqhPEJ2CMdSQmjvu6",
             "model_id": "eleven_multilingual_v2",
         },
@@ -53,7 +53,7 @@ voices = {
             "voice_id": "ORPHIL42UCbVvxd8XD6B",
             "model_id": "eleven_multilingual_v2",
         },
-        'Rangel':{
+        'Rangel Barbosa':{
             "avatar_id": "4b4db6311cfe4c3b9b840267cfca6952",
             "name": "Rangel Barbosa",
             "voice_id": "rVYXh5OmQcvchhNYtBWe",
@@ -308,7 +308,7 @@ def script_generator():
     templates = {
         # "Template 1.4.4": "This is the text for template 2.",
         # "Template 1.2.1": "This is the text for template 1.",
-        "Template A - Youtube": "Template A - Youtube",
+        # "Template A - Youtube": "Template A - Youtube",
         "Template B - Youtube": "Template B - Youtube",
         "Template C - Youtube": "Template C - Youtube",
     }
@@ -396,7 +396,7 @@ def script_generator():
                 config
             )
 
-            # scenes = video.setup_intro_scene()[:3]
+            # scenes = video.setup_intro_scene()[:9]
             scenes = video.setup_intro_scene()
 
             scenes_df = pd.DataFrame(scenes)
@@ -405,11 +405,23 @@ def script_generator():
             # if generate_image_assets:
             #     scenes = video.generate_image_files(scenes)
             
+            audio_is_completed = False
             if generate_audio_assets:
-                scenes = video.generate_audio_files(scenes, stability=stability, similarity_boost=similarity_boost, style=style, voice_id=voices[selected_avatar]['voice_id'], model_id=voices[selected_avatar]['model_id'])
+                scenes, audio_is_completed = video.generate_audio_files(scenes, stability=stability, similarity_boost=similarity_boost, style=style, voice_id=voices[selected_avatar]['voice_id'], model_id=voices[selected_avatar]['model_id'])
 
+            if audio_is_completed:
+                st.success('Audio assets generated successfully.')
+            else:
+                st.error('Failed to generate avatar assets.')
+
+            video_is_completed = False
             if generate_avatar_assets:
-                scenes = video.generate_avatar_files(scenes, avatar_id=voices[selected_avatar]['avatar_id'], is_teste=False)
+                scenes, video_is_completed = video.generate_avatar_files(scenes, avatar_id=voices[selected_avatar]['avatar_id'], is_teste=False)
+
+            if video_is_completed:
+                st.success('Avatar assets generated successfully.')
+            else:
+                st.error('Failed to generate avatar assets.')
 
             scenes_df = pd.DataFrame(scenes)
             st.dataframe(scenes_df)
@@ -421,8 +433,8 @@ def script_generator():
                 data=csv,
                 file_name=f"{template}_{selected_avatar}.csv",
                 mime="text/csv"
-            )
-            
+            )    
+
             st.success('Script generated successfully.')
 
 def course_generator():
@@ -517,6 +529,40 @@ def fetch_lgus():
             
             st.success('Script generated successfully.')
             
+def image_resizer():
+    
+    st.write("Image Resizer")
+
+    uploaded_file = st.file_uploader("Upload Image", type=['jpg', 'png', 'jpeg'])
+    image_url = st.text_input('Enter Image URL:', placeholder='https://...')
+    if uploaded_file is not None:
+        img = Image.open(uploaded_file)
+        st.image(img, caption='Uploaded Image.', use_column_width=True)
+        st.write("resolution:", img.size)
+
+    if image_url:
+        img = download_image_in_memory(image_url)
+        st.image(img, caption=image_url, use_column_width=True)
+        st.write("resolution:", img.size)
+
+    width_percent = st.slider("Width Percent:", min_value=0, max_value=100, value=50)
+
+    if st.button('Resize Image'):
+        with st.spinner("Loading..."):
+            img_resized = img.resize((int(img.width * width_percent / 100), int(img.height * width_percent / 100)))
+            # Convert the PIL Image object to a file-like object
+            img_file = io.BytesIO()
+            img_resized.save(img_file, format='JPEG')
+            img_file.seek(0)
+            image_url = upload_object_in_memory_to_s3(img_file, f'text_to_image_generator/{uuid.uuid4()}.jpg')
+        st.image(img_resized, caption='Resized Image.', use_column_width=True)
+        st.write("new resolution:", img_resized.size)
+        
+        
+        st.success(f'Image resized successfully. at {image_url}')
+
+def video_subtitle_generator():
+    pass
 
 def main():
     st.title("Apoia Video Engine - Toolbox")
@@ -531,7 +577,8 @@ def main():
         "Text to Speech Generator (ElevenLabs API)",
         "Text to Avatar Generator (Heygen API)",
         "Script Generator",
-        "Course Generator",
+        # "Course Generator",
+        "Image Resizer",
     ])
 
     if selection == "Text to Image Generator (Midjourney non official API)":
@@ -542,6 +589,8 @@ def main():
         text_to_avatar_generator()
     elif selection == "Script Generator":
         script_generator()
+    elif selection == "Image Resizer":
+        image_resizer()
     # elif selection == "Course Generator":
     #     course_generator()
 
