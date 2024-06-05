@@ -48,7 +48,7 @@ voices = {
             "model_id": "eleven_multilingual_v2",
         },
         'Yanco Paternó':{
-            "avatar_id": "e80beb6b91cb40a59a6ed3c4ca370d3f",
+            "avatar_id": "1f0c988b7db6468689c859fa0270fa2b",
             "name": "Yanco Paternó",
             "voice_id": "ORPHIL42UCbVvxd8XD6B",
             "model_id": "eleven_multilingual_v2",
@@ -108,7 +108,7 @@ voices = {
             "model_id": "eleven_multilingual_v2",
         },
         'Claudia Muniz': {
-            "avatar_id": "cb870716aa5a429e8c7b9971150ee5ca",
+            "avatar_id": "79d485fe1139475cb268604ea8cae35f",
             "name": "Claudia Muniz",
             "voice_id": "VCCSalUJGlrbOJYYiuND",
             "model_id": "eleven_multilingual_v2",
@@ -236,13 +236,17 @@ def text_to_speech_generator():
     st.write("Text to Speech Generator using ElevenLabs API")
     
     selected_voice = st.selectbox("Select a voice:", list(voices.keys()))
+    if selected_voice:
+        eleven_labs_id = st.text_input('ElevenLabs ID:', voices[selected_voice]['voice_id'])
+    else:
+        eleven_labs_id = st.text_input('ElevenLabs ID:')
     text = st.text_area("Enter text:", """Alcançe seus objetivos na medida""")
     stability = st.slider("Stability:", min_value=0.0, max_value=1.0, value=0.48)
     similarity_boost = st.slider("Similarity Boost:", min_value=0.0, max_value=1.0, value=0.55)
     style = st.slider("Style:", min_value=0.0, max_value=1.0, value=0.00)
 
     if st.button('Generate Speech'):
-        voice_id = voices[selected_voice]['voice_id']
+        voice_id = eleven_labs_id
         model_id = voices[selected_voice]['model_id']
 
         audio_data = fetch_narration_in_memory(text, voice_id, stability, similarity_boost, style, model_id)
@@ -268,6 +272,10 @@ def text_to_avatar_generator():
     st.write("Text to Avatar Generator using Heygen API")
 
     selected_avatar = st.selectbox("Select a voice:", list(voices.keys()))
+    if selected_avatar:
+        heygen_avatar_id = st.text_input('Heygen Avatar ID:', voices[selected_avatar]['avatar_id'])
+    else:
+        heygen_avatar_id = st.text_input('Heygen Avatar ID:')
     # narration = st.text_area("Enter narration:", 'Oi, aqui é o Paulo')
     uploaded_file = st.file_uploader("Upload MP3 file", type=['mp3'])
     test = st.checkbox('Test', value=False)
@@ -281,7 +289,7 @@ def text_to_avatar_generator():
                 audio_url = upload_object_in_memory_to_s3(uploaded_file_io, 'audio/narration.mp3')
 
                 if audio_url:
-                    avatar_id = voices[selected_avatar]['avatar_id']
+                    avatar_id = heygen_avatar_id
                     result = generate_avatar_heygen_with_audio_file(audio_url=audio_url, avatar_id=avatar_id, is_teste=test)
             
             # else:
@@ -291,6 +299,11 @@ def text_to_avatar_generator():
                 st.error('Failed to generate avatar.')
                 return
             
+            if result[0] == 404:
+                st.error(f'error...{result}')
+                return
+
+
             video_id = result[1]['data']['video_id']
 
             result = get_generated_avatar_heygen(video_id)
@@ -300,6 +313,7 @@ def text_to_avatar_generator():
                 result = get_generated_avatar_heygen(video_id)
 
             video_url = result[1]['data']['video_url']
+            st.success(f'Avatar generated successfully. at {video_url}')
             st.video(video_url)
 
 def script_generator():
@@ -576,9 +590,9 @@ def main():
         "Text to Image Generator (Midjourney non official API)",
         "Text to Speech Generator (ElevenLabs API)",
         "Text to Avatar Generator (Heygen API)",
-        "Script Generator",
+        # "Script Generator",
         # "Course Generator",
-        "Image Resizer",
+        # "Image Resizer",
     ])
 
     if selection == "Text to Image Generator (Midjourney non official API)":
